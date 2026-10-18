@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="it" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terraforming Mars: Ares Expedition - Digital Edition</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Orbitron, Michroma, Rajdhani & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Michroma&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['Rajdhani', 'monospace'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            michroma: ['Michroma', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #050811;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(220, 38, 38, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(37, 99, 235, 0.12) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(15, 23, 42, 0.5) 0px, transparent 100%);
+      background-attachment: fixed;
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+  </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col font-sans selection:bg-amber-500 selection:text-slate-950">
+
+  <!-- TOP APP BAR -->
+  <header class="bg-slate-950/80 border-b border-slate-800/80 backdrop-blur-md sticky top-0 z-40 px-4 py-3">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <!-- Title & Logo -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-red-600 to-amber-500 flex items-center justify-center text-xl shadow-lg shadow-red-600/30 font-black">
+          🚀
+        </div>
+        <div>
+          <h1 class="text-lg font-black tracking-wider text-white uppercase font-mono leading-none">
+            Terraforming Mars: <span class="text-amber-400">Ares Expedition</span>
+          </h1>
+          <span class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Edizione Digitale Browser • Single Player vs IA</span>
+        </div>
+      </div>
+
+      <!-- Navigation & Action Controls -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Round Badge -->
+        <span id="round-indicator" class="bg-slate-900 border border-slate-700 text-amber-300 font-mono font-bold text-xs px-3 py-1.5 rounded-lg shadow-inner">
+          Round 1
+        </span>
+
+        <!-- Audio Toggle -->
+        <button id="sound-toggle-btn" class="text-xs bg-slate-900 hover:bg-slate-800 border border-slate-700 text-amber-400 font-bold px-3 py-1.5 rounded-lg transition">
+          🔊 Audio ON
+        </button>
+
+        <!-- Rules Help -->
+        <button id="rules-btn" class="text-xs bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white font-bold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
+          <span>📖</span>
+          <span class="hidden sm:inline">Regolamento</span>
+        </button>
+
+        <!-- Import Deck -->
+        <button id="import-deck-btn" class="text-xs bg-slate-900 hover:bg-slate-800 border border-slate-700 text-cyan-400 font-bold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
+          <span>📥</span>
+          <span class="hidden sm:inline">Importa Mazzo</span>
+        </button>
+
+        <!-- Main Menu Button -->
+        <button id="open-menu-btn" class="text-xs bg-amber-950/60 hover:bg-amber-900 border border-amber-600/60 text-amber-300 font-bold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
+          <span>🏠</span>
+          <span>Menu</span>
+        </button>
+
+        <!-- Reset Button -->
+        <button onclick="location.reload()" class="text-xs bg-red-950/60 hover:bg-red-900 border border-red-800/60 text-red-300 font-bold px-3 py-1.5 rounded-lg transition">
+          Ricomincia
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- PHASE BANNER -->
+  <section class="max-w-7xl mx-auto w-full px-4 pt-4">
+    <div id="phase-banner" class="bg-slate-900/90 border border-amber-500/40 rounded-2xl p-4 shadow-xl backdrop-blur-md">
+      <!-- Dynamic Phase Header injected here -->
+    </div>
+  </section>
+
+  <!-- MAIN GAME DASHBOARD -->
+  <main class="max-w-7xl mx-auto w-full px-4 py-4 flex-1 flex flex-col gap-5">
+    
+    <!-- TOP SECTION: MARS & BOT -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <!-- Mars Global Parameters (2 cols on large screen) -->
+      <div id="mars-board-container" class="lg:col-span-2">
+        <!-- Mars Board rendered dynamically -->
+      </div>
+
+      <!-- Ares Bot Opponent (1 col) -->
+      <div id="bot-dashboard-container">
+        <!-- Bot Dashboard rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- PLAYER DASHBOARD -->
+    <div id="player-dashboard-container">
+      <!-- Player Dashboard rendered dynamically -->
+    </div>
+
+    <!-- CARD MANAGEMENT & LOG SECTION -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-5 flex-1">
+      
+      <!-- Cards Tabs and Grid (3 cols) -->
+      <div class="lg:col-span-3 bg-slate-900/90 border border-slate-700/80 rounded-2xl p-5 shadow-2xl backdrop-blur-md flex flex-col">
+        <!-- Card Tabs -->
+        <div class="flex flex-wrap items-center justify-between border-b border-slate-800 pb-3 mb-4 gap-2">
+          <div class="flex items-center gap-2">
+            <button 
+              data-tab="hand" 
+              class="tab-btn font-bold text-xs px-3.5 py-2 rounded-xl border-b-2 border-amber-400 text-amber-400 bg-slate-950/60 transition flex items-center gap-2"
+            >
+              <span>Mano</span>
+              <span id="tab-count-hand" class="bg-amber-950 text-amber-300 font-mono text-[10px] px-2 py-0.5 rounded-full border border-amber-700/60">0</span>
+            </button>
+
+            <button 
+              data-tab="green" 
+              class="tab-btn font-bold text-xs px-3.5 py-2 rounded-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 bg-slate-950/60 transition flex items-center gap-2"
+            >
+              <span class="text-emerald-400">Verdi in Gioco</span>
+              <span id="tab-count-green" class="bg-emerald-950 text-emerald-300 font-mono text-[10px] px-2 py-0.5 rounded-full border border-emerald-700/60">0</span>
+            </button>
+
+            <button 
+              data-tab="blue" 
+              class="tab-btn font-bold text-xs px-3.5 py-2 rounded-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 bg-slate-950/60 transition flex items-center gap-2"
+            >
+              <span class="text-blue-400">Blu in Gioco</span>
+              <span id="tab-count-blue" class="bg-blue-950 text-blue-300 font-mono text-[10px] px-2 py-0.5 rounded-full border border-blue-700/60">0</span>
+            </button>
+
+            <button 
+              data-tab="red" 
+              class="tab-btn font-bold text-xs px-3.5 py-2 rounded-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 bg-slate-950/60 transition flex items-center gap-2"
+            >
+              <span class="text-red-400">Rosse Giocate</span>
+              <span id="tab-count-red" class="bg-red-950 text-red-300 font-mono text-[10px] px-2 py-0.5 rounded-full border border-red-700/60">0</span>
+            </button>
+          </div>
+
+          <div class="text-[11px] text-slate-400 italic">
+            Fai clic su "Gioca" o "Vendi" per interagire con le carte.
+          </div>
+        </div>
+
+        <!-- Cards Display Grid -->
+        <div id="cards-container" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 flex-1 overflow-y-auto max-h-[600px] p-1">
+          <!-- Cards rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Live Game Log (1 col) -->
+      <div class="bg-slate-900/90 border border-slate-700/80 rounded-2xl p-4 shadow-2xl backdrop-blur-md flex flex-col max-h-[680px]">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+          <span class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+            <span>📜</span> Registro di Bordo
+          </span>
+          <span class="text-[10px] text-slate-500 font-mono">Live</span>
+        </div>
+
+        <div id="game-log-list" class="flex-1 overflow-y-auto space-y-1 pr-1 font-mono">
+          <!-- Logs rendered dynamically -->
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- MAIN MENU & SETUP OVERLAY -->
+  <div id="menu-overlay"></div>
+
+  <!-- MODAL OVERLAY (Phase Selection, Research, Game Over) -->
+  <div id="modal-overlay" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden"></div>
+
+  <!-- RULES REFERENCE MODAL -->
+  <div id="rules-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-3xl w-full p-6 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+        <h3 class="text-lg font-black text-amber-400 uppercase font-mono flex items-center gap-2">
+          <span>📖</span> Regolamento Ufficiale - Ares Expedition
+        </h3>
+        <button id="close-rules-btn" class="w-8 h-8 rounded-lg bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center font-bold">
+          ✕
+        </button>
+      </div>
+
+      <div class="overflow-y-auto space-y-4 text-xs text-slate-300 pr-2 leading-relaxed">
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+          <h4 class="font-bold text-white text-sm mb-1 text-amber-300">🎯 Obiettivo del Gioco</h4>
+          <p>Terraformare Marte portando tutti e 3 i parametri globali al massimo: <strong>Temperatura (+8°C)</strong>, <strong>Ossigeno (14%)</strong> e <strong>Oceani (9 tessere)</strong>. Il vincitore è chi totalizza più Punti Vittoria (TR + tessere Foresta + carte Progetto).</p>
+        </div>
+
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+          <h4 class="font-bold text-white text-sm mb-1 text-emerald-400">1. Struttura del Round</h4>
+          <p>Ogni round è suddiviso in 3 passi:</p>
+          <ul class="list-disc list-inside mt-1 space-y-1">
+            <li><strong>Pianificazione:</strong> Tutti i giocatori scelgono segretamente 1 delle 5 carte fase. <em>Regola:</em> Non puoi scegliere la stessa fase del turno precedente.</li>
+            <li><strong>Risoluzione:</strong> Si risolvono solo le fasi scelte da almeno un giocatore, in ordine da I a V. Tutti partecipano, ma chi ha scelto la fase ottiene il <strong>Bonus di Guida</strong>.</li>
+            <li><strong>Fine Round:</strong> Verifica completamento di Marte. Se non completo, inizia un nuovo round.</li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+          <h4 class="font-bold text-white text-sm mb-1 text-blue-400">2. Le 5 Fasi di Gioco</h4>
+          <div class="space-y-2 mt-2">
+            <div>
+              <strong class="text-emerald-400">Fase I - Sviluppo (Verdi):</strong> Gioca 1 carta verde. <em>Bonus:</em> Sconto di 3 MC.
+            </div>
+            <div>
+              <strong class="text-blue-400">Fase II - Costruzione (Blu/Rosse):</strong> Gioca 1 carta blu o rossa. <em>Bonus:</em> Pesca 1 carta O gioca una seconda carta blu/rossa.
+            </div>
+            <div>
+              <strong class="text-amber-400">Fase III - Azioni:</strong> Attiva l'azione di ogni tua carta blu una volta + esegui qualsiasi Azione Standard. <em>Bonus:</em> Riattiva 1 carta blu una seconda volta.
+            </div>
+            <div>
+              <strong class="text-purple-400">Fase IV - Produzione:</strong> Ottieni MC (= TR + Produzione MC), Calore, Piante e pesca carte pari alla tua Produzione Carte. <em>Bonus:</em> +4 MC aggiuntivi.
+            </div>
+            <div>
+              <strong class="text-pink-400">Fase V - Ricerca:</strong> Pesca 2 carte e tienine 1. <em>Bonus:</em> Pesca 5 carte e tienine 2.
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+          <h4 class="font-bold text-white text-sm mb-1 text-cyan-400">3. Sconti Acciaio e Titanio</h4>
+          <p>L'<strong>Acciaio</strong> vale 2 MC di sconto sulle carte con tag Edificio (Building). Il <strong>Titanio</strong> vale 3 MC di sconto sulle carte con tag Spazio (Space). Lo sconto viene calcolato automaticamente dal motore di gioco!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMPORT DECK MODAL -->
+  <div id="import-deck-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-2xl w-full p-6 shadow-2xl flex flex-col max-h-[85vh]">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+        <h3 class="text-lg font-black text-cyan-400 uppercase font-mono flex items-center gap-2">
+          <span>📥</span> Importatore Deck Progetti (JSON)
+        </h3>
+        <button id="close-import-btn" class="w-8 h-8 rounded-lg bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center font-bold">
+          ✕
+        </button>
+      </div>
+
+      <p class="text-xs text-slate-400 mb-3">
+        Incolla un array JSON contenente nuove carte conformi allo schema di Ares Expedition (con <code>id</code>, <code>name</code>, <code>type</code>, <code>cost</code>, <code>tags</code>, ecc.).
+      </p>
+
+      <textarea 
+        id="import-json-textarea" 
+        rows="10" 
+        class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-mono text-cyan-300 focus:outline-none focus:border-cyan-500 mb-4"
+        placeholder='[
+  {
+    "id": "c999",
+    "name": "Nuova Carta",
+    "type": "green",
+    "cost": 15,
+    "tags": ["building"],
+    "description": "Carta personalizzata",
+    "vp": 2
+  }
+]'
+      ></textarea>
+
+      <div class="flex justify-end gap-3">
+        <button id="execute-import-btn" class="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs uppercase tracking-wider transition shadow-lg shadow-cyan-600/30">
+          Carica nel Mazzo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script Modules -->
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>
