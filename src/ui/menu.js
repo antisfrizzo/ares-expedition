@@ -7,67 +7,67 @@ import { CORPORATIONS } from '../data/corporations.js';
 
 export function renderMainMenu() {
   return `
-    <div id="main-menu-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-between p-6 overflow-y-auto" style="background: radial-gradient(circle at 50% 25%, #2a0808 0%, #0d0407 45%, #05060d 100%);">
+    <div id="main-menu-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-between p-3 sm:p-6 overflow-y-auto" style="background: radial-gradient(circle at 50% 25%, #2a0808 0%, #0d0407 45%, #05060d 100%);">
       
       <!-- Starfield & Mars background effect -->
-      <div class="absolute inset-0 pointer-events-none opacity-40 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:32px_32px]"></div>
+      <div class="absolute inset-0 pointer-events-none opacity-40 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:24px_24px] sm:[background-size:32px_32px]"></div>
       
       <!-- Top Aerospace Header info -->
-      <div class="relative z-10 w-full max-w-5xl flex items-center justify-between text-xs font-mono text-slate-400 border-b border-red-950/60 pb-3">
-        <span class="flex items-center gap-2">
+      <div class="relative z-10 w-full max-w-5xl flex items-center justify-between text-[10px] sm:text-xs font-mono text-slate-400 border-b border-red-950/60 pb-2 sm:pb-3">
+        <span class="flex items-center gap-1.5 sm:gap-2">
           <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-          <span>ARES EXPEDITION • MISSION CONTROL</span>
+          <span class="truncate">ARES EXPEDITION • MISSION CONTROL</span>
         </span>
-        <span class="text-amber-500/80 font-bold tracking-wider">SOL 2341 • MARS RECONNAISSANCE</span>
+        <span class="text-amber-500/80 font-bold tracking-wider hidden xs:inline">SOL 2341 • MARS</span>
       </div>
 
       <!-- Center Logo & Title Block -->
-      <div class="relative z-10 text-center my-auto py-8 max-w-3xl">
+      <div class="relative z-10 text-center my-auto py-4 sm:py-8 max-w-3xl w-full px-2">
         <!-- Mars Planet Graphic Icon -->
-        <div class="w-28 h-28 mx-auto mb-6 rounded-full bg-gradient-to-tr from-red-700 via-orange-600 to-amber-400 shadow-[0_0_60px_rgba(239,68,68,0.5)] border-2 border-amber-400/40 flex items-center justify-center relative overflow-hidden group">
+        <div class="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-3 sm:mb-6 rounded-full bg-gradient-to-tr from-red-700 via-orange-600 to-amber-400 shadow-[0_0_35px_rgba(239,68,68,0.5)] sm:shadow-[0_0_60px_rgba(239,68,68,0.5)] border-2 border-amber-400/40 flex items-center justify-center relative overflow-hidden group">
           <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.4)_0%,transparent_60%)]"></div>
           <!-- Surface Crater details -->
-          <div class="w-12 h-12 rounded-full border border-red-900/40 bg-red-900/30 absolute -bottom-2 -left-2"></div>
-          <div class="w-8 h-8 rounded-full border border-red-900/40 bg-red-900/30 absolute top-4 right-2"></div>
-          <span class="text-4xl filter drop-shadow-md">🪐</span>
+          <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-full border border-red-900/40 bg-red-900/30 absolute -bottom-2 -left-2"></div>
+          <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-full border border-red-900/40 bg-red-900/30 absolute top-2 right-1 sm:top-4 sm:right-2"></div>
+          <span class="text-2xl sm:text-4xl filter drop-shadow-md">🪐</span>
         </div>
 
         <!-- Official Logo Typography -->
-        <h1 class="text-4xl sm:text-6xl md:text-7xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-100 to-slate-400 uppercase font-orbitron leading-none drop-shadow-[0_5px_15px_rgba(0,0,0,0.8)]">
+        <h1 class="text-2xl xs:text-4xl sm:text-6xl md:text-7xl font-black tracking-normal sm:tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-100 to-slate-400 uppercase font-orbitron leading-none drop-shadow-[0_3px_10px_rgba(0,0,0,0.8)]">
           TERRAFORMING
         </h1>
-        <h1 class="text-5xl sm:text-7xl md:text-8xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 uppercase font-orbitron leading-none mt-1 drop-shadow-[0_0_35px_rgba(239,68,68,0.6)]">
+        <h1 class="text-3xl xs:text-5xl sm:text-7xl md:text-8xl font-black tracking-wider sm:tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 uppercase font-orbitron leading-none mt-0.5 sm:mt-1 drop-shadow-[0_0_25px_rgba(239,68,68,0.6)]">
           MARS
         </h1>
 
         <!-- Ares Expedition Subtitle Banner -->
-        <div class="mt-4 flex items-center justify-center gap-3">
-          <div class="h-[2px] w-12 sm:w-24 bg-gradient-to-r from-transparent to-amber-500"></div>
-          <h2 class="text-sm sm:text-xl md:text-2xl font-black text-amber-300 uppercase tracking-[0.3em] font-michroma drop-shadow-[0_0_15px_rgba(245,158,11,0.5)]">
+        <div class="mt-2 sm:mt-4 flex items-center justify-center gap-2 sm:gap-3">
+          <div class="h-[1.5px] w-6 sm:w-20 bg-gradient-to-r from-transparent to-amber-500"></div>
+          <h2 class="text-xs xs:text-sm sm:text-xl md:text-2xl font-black text-amber-300 uppercase tracking-[0.15em] sm:tracking-[0.3em] font-michroma drop-shadow-[0_0_15px_rgba(245,158,11,0.5)]">
             ARES EXPEDITION
           </h2>
-          <div class="h-[2px] w-12 sm:w-24 bg-gradient-to-l from-transparent to-amber-500"></div>
+          <div class="h-[1.5px] w-6 sm:w-20 bg-gradient-to-l from-transparent to-amber-500"></div>
         </div>
-        <p class="text-xs sm:text-sm text-slate-400 font-mono tracking-widest uppercase mt-2">
-          Edizione Digitale per Browser • Simulazione Ufficiale
+        <p class="text-[10px] sm:text-xs text-slate-400 font-mono tracking-wider uppercase mt-1 sm:mt-2">
+          Edizione Digitale Browser • Single Player vs IA
         </p>
 
         <!-- Menu Navigation Buttons -->
-        <div class="mt-10 flex flex-col items-center gap-3.5 max-w-md mx-auto w-full">
+        <div class="mt-5 sm:mt-8 flex flex-col items-center gap-2.5 sm:gap-3.5 max-w-xs sm:max-w-md mx-auto w-full">
           
           <!-- Start Game Button -->
           <button 
             id="menu-start-game-btn"
-            class="w-full py-4 px-8 rounded-xl font-black text-sm uppercase tracking-widest font-orbitron transition-all duration-300 flex items-center justify-center gap-3 bg-gradient-to-r from-red-600 via-orange-500 to-amber-500 hover:from-red-500 hover:via-orange-400 hover:to-amber-400 text-slate-950 shadow-[0_0_25px_rgba(245,158,11,0.4)] hover:shadow-[0_0_40px_rgba(245,158,11,0.7)] hover:scale-102 active:scale-98 border border-amber-300/60"
+            class="w-full py-3 sm:py-4 px-4 sm:px-8 rounded-xl font-black text-xs sm:text-sm uppercase tracking-wider sm:tracking-widest font-orbitron transition-all duration-200 flex items-center justify-center gap-2 sm:gap-3 bg-gradient-to-r from-red-600 via-orange-500 to-amber-500 hover:from-red-500 hover:via-orange-400 hover:to-amber-400 text-slate-950 shadow-[0_0_20px_rgba(245,158,11,0.4)] active:scale-98 border border-amber-300/60"
           >
-            <span class="text-xl">🚀</span>
+            <span class="text-lg sm:text-xl">🚀</span>
             <span>Avvia Partita</span>
           </button>
 
           <!-- Settings Button -->
           <button 
             id="menu-settings-btn"
-            class="w-full py-3.5 px-8 rounded-xl font-bold text-xs uppercase tracking-widest font-orbitron transition-all duration-200 flex items-center justify-center gap-2.5 bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700/80 hover:border-amber-400/60 hover:text-white shadow-lg shadow-black/40"
+            class="w-full py-2.5 sm:py-3.5 px-4 sm:px-8 rounded-xl font-bold text-xs uppercase tracking-wider sm:tracking-widest font-orbitron transition-all duration-200 flex items-center justify-center gap-2 bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700/80 hover:border-amber-400/60 hover:text-white shadow-md"
           >
             <span>⚙️</span>
             <span>Impostazioni</span>
@@ -76,7 +76,7 @@ export function renderMainMenu() {
           <!-- Rules Button -->
           <button 
             id="menu-rules-btn"
-            class="w-full py-3.5 px-8 rounded-xl font-bold text-xs uppercase tracking-widest font-orbitron transition-all duration-200 flex items-center justify-center gap-2.5 bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700/80 hover:border-cyan-400/60 hover:text-white shadow-lg shadow-black/40"
+            class="w-full py-2.5 sm:py-3.5 px-4 sm:px-8 rounded-xl font-bold text-xs uppercase tracking-wider sm:tracking-widest font-orbitron transition-all duration-200 flex items-center justify-center gap-2 bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700/80 hover:border-cyan-400/60 hover:text-white shadow-md"
           >
             <span>📖</span>
             <span>Regolamento Ufficiale</span>
@@ -85,18 +85,18 @@ export function renderMainMenu() {
           <!-- Import Deck Button -->
           <button 
             id="menu-deck-btn"
-            class="w-full py-3 px-8 rounded-xl font-bold text-xs uppercase tracking-widest font-mono transition-all duration-200 flex items-center justify-center gap-2 bg-slate-950/60 hover:bg-slate-900 text-slate-400 hover:text-cyan-300 border border-slate-800"
+            class="w-full py-2 sm:py-3 px-4 sm:px-8 rounded-xl font-bold text-[11px] sm:text-xs uppercase tracking-wider font-mono transition-all duration-200 flex items-center justify-center gap-2 bg-slate-950/60 hover:bg-slate-900 text-slate-400 hover:text-cyan-300 border border-slate-800"
           >
             <span>📥</span>
-            <span>Gestione Mazzo Progetti (JSON)</span>
+            <span>Gestione Mazzo (JSON)</span>
           </button>
 
         </div>
       </div>
 
       <!-- Footer Info -->
-      <div class="relative z-10 w-full max-w-5xl flex flex-wrap items-center justify-between text-[11px] font-mono text-slate-500 border-t border-slate-800/80 pt-4 gap-2">
-        <span>Terraforming Mars: Ares Expedition © FryxGames & Stronghold Games</span>
+      <div class="relative z-10 w-full max-w-5xl flex flex-wrap items-center justify-between text-[10px] sm:text-[11px] font-mono text-slate-500 border-t border-slate-800/80 pt-2 sm:pt-4 gap-1 sm:gap-2">
+        <span>Ares Expedition Web Edition</span>
         <span class="text-amber-500/80 font-bold">Client-Side Engine v1.2</span>
       </div>
 
@@ -106,38 +106,38 @@ export function renderMainMenu() {
 
 export function renderCorporationSelectModal(corpOptions) {
   return `
-    <div id="corp-select-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-      <div class="bg-slate-900 border-2 border-amber-500/60 rounded-3xl max-w-4xl w-full p-6 sm:p-8 shadow-2xl flex flex-col max-h-[90vh] overflow-y-auto">
+    <div id="corp-select-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-2 sm:p-4">
+      <div class="bg-slate-900 border-2 border-amber-500/60 rounded-2xl sm:rounded-3xl max-w-4xl w-full p-4 sm:p-7 shadow-2xl flex flex-col max-h-[94vh] overflow-y-auto">
         
-        <div class="text-center mb-6">
-          <span class="text-xs font-bold text-amber-400 uppercase tracking-widest block font-mono mb-1">Preparazione Partita (Setup Ufficiale)</span>
-          <h2 class="text-2xl sm:text-3xl font-black text-white font-orbitron uppercase">Scegli la tua Corporazione</h2>
-          <p class="text-xs text-slate-400 mt-1">
-            Ti sono state distribuite 2 corporazioni. Seleziona quella con cui guidare la spedizione su Marte.
+        <div class="text-center mb-3 sm:mb-5">
+          <span class="text-[10px] sm:text-xs font-bold text-amber-400 uppercase tracking-widest block font-mono mb-0.5">Preparazione Partita (Setup Ufficiale)</span>
+          <h2 class="text-xl sm:text-2xl md:text-3xl font-black text-white font-orbitron uppercase">Scegli la tua Corporazione</h2>
+          <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">
+            Ti sono state distribuite 2 corporazioni. Seleziona quella con cui guidare la spedizione.
           </p>
         </div>
 
         <!-- 2 Corporation Cards Comparison -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-5 mb-4">
           ${corpOptions.map((corp, idx) => `
-            <div class="bg-slate-950/90 border-2 border-slate-700 hover:border-amber-400 rounded-2xl p-5 flex flex-col justify-between transition-all duration-300 shadow-xl group">
+            <div class="bg-slate-950/90 border-2 border-slate-700 hover:border-amber-400 rounded-xl sm:rounded-2xl p-3.5 sm:p-5 flex flex-col justify-between transition-all duration-200 shadow-xl group">
               <div>
-                <div class="flex items-center justify-between mb-3 border-b border-slate-800 pb-3">
+                <div class="flex items-center justify-between mb-2.5 border-b border-slate-800 pb-2.5">
                   <div>
-                    <h3 class="text-xl font-black text-white font-orbitron group-hover:text-amber-300 transition">${corp.name}</h3>
+                    <h3 class="text-lg sm:text-xl font-black text-white font-orbitron group-hover:text-amber-300 transition">${corp.name}</h3>
                     <p class="text-xs text-amber-400 font-medium">${corp.subtitle}</p>
                   </div>
                   <div class="text-right">
-                    <span class="text-[10px] text-slate-500 block uppercase font-mono font-bold">MC Iniziali</span>
-                    <span class="text-2xl font-black text-amber-400 font-mono">${corp.startingMC} MC</span>
+                    <span class="text-[9px] text-slate-500 block uppercase font-mono font-bold">MC Iniziali</span>
+                    <span class="text-xl sm:text-2xl font-black text-amber-400 font-mono">${corp.startingMC} MC</span>
                   </div>
                 </div>
 
                 <!-- Starting Stats -->
-                <div class="grid grid-cols-2 gap-2 text-xs font-mono mb-4 bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
+                <div class="grid grid-cols-2 gap-2 text-xs font-mono mb-3 bg-slate-900/60 p-2 sm:p-2.5 rounded-xl border border-slate-800">
                   <div>
                     <span class="text-slate-400 block text-[10px]">Produzione Iniziale:</span>
-                    <span class="text-slate-200">
+                    <span class="text-slate-200 text-[11px]">
                       ${corp.startingProduction.plants ? `🌿 +${corp.startingProduction.plants} ` : ''}
                       ${corp.startingProduction.heat ? `🔥 +${corp.startingProduction.heat} ` : ''}
                       ${corp.startingProduction.mc ? `💰 +${corp.startingProduction.mc} ` : ''}
@@ -147,7 +147,7 @@ export function renderCorporationSelectModal(corpOptions) {
                   </div>
                   <div>
                     <span class="text-slate-400 block text-[10px]">Risorse Iniziali:</span>
-                    <span class="text-slate-200">
+                    <span class="text-slate-200 text-[11px]">
                       ${corp.startingResources.plants ? `🌿 ${corp.startingResources.plants} ` : ''}
                       ${corp.startingResources.heat ? `🔥 ${corp.startingResources.heat} ` : ''}
                       ${corp.startingResources.steel ? `🏗️ ${corp.startingResources.steel} ` : ''}
@@ -158,15 +158,15 @@ export function renderCorporationSelectModal(corpOptions) {
                 </div>
 
                 <!-- Rule Description -->
-                <div class="bg-amber-950/20 border border-amber-900/40 p-3 rounded-xl mb-4">
-                  <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider block mb-1">Abilità Speciale:</span>
-                  <p class="text-xs text-slate-200 leading-relaxed">${corp.description}</p>
+                <div class="bg-amber-950/20 border border-amber-900/40 p-2.5 sm:p-3 rounded-xl mb-3">
+                  <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider block mb-0.5">Abilità Speciale:</span>
+                  <p class="text-[11px] sm:text-xs text-slate-200 leading-relaxed">${corp.description}</p>
                 </div>
               </div>
 
               <button 
                 data-select-corp="${corp.id}"
-                class="w-full py-3 rounded-xl font-black text-xs uppercase tracking-wider font-orbitron transition-all duration-200 bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2"
+                class="w-full py-2.5 sm:py-3 rounded-xl font-black text-xs uppercase tracking-wider font-orbitron transition-all duration-200 bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2"
               >
                 <span>🏢</span>
                 <span>Seleziona ${corp.name}</span>

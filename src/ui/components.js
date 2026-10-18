@@ -18,73 +18,73 @@ export function renderMarsBoard(global) {
   const oxyPercent = Math.min(100, Math.round((oxySteps / 14) * 100));
 
   return `
-    <div class="bg-slate-900/90 border border-slate-700/80 rounded-2xl p-5 shadow-2xl backdrop-blur-md">
+    <div class="bg-slate-900/90 border border-slate-700/80 rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-2xl backdrop-blur-md">
       <!-- Mars Global Header & Progress -->
-      <div class="flex flex-wrap items-center justify-between gap-4 mb-5 border-b border-slate-800 pb-4">
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-red-600 via-orange-500 to-amber-400 flex items-center justify-center shadow-lg shadow-orange-900/40 text-2xl animate-pulse">
+      <div class="flex flex-wrap items-center justify-between gap-2 sm:gap-4 mb-3 sm:mb-5 border-b border-slate-800 pb-3 sm:pb-4">
+        <div class="flex items-center gap-2.5 sm:gap-3">
+          <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-gradient-to-tr from-red-600 via-orange-500 to-amber-400 flex items-center justify-center shadow-lg shadow-orange-900/40 text-xl sm:text-2xl animate-pulse shrink-0">
             🪐
           </div>
           <div>
-            <h2 class="text-xl font-bold tracking-wider text-slate-100 uppercase">Marte: Parametri Globali</h2>
-            <p class="text-xs text-slate-400">Progresso Terraforming globale: <span class="text-orange-400 font-semibold">${progressPercent}%</span></p>
+            <h2 class="text-base sm:text-xl font-bold tracking-wider text-slate-100 uppercase">Marte: Parametri Globali</h2>
+            <p class="text-[11px] sm:text-xs text-slate-400">Progresso Terraforming: <span class="text-orange-400 font-semibold">${progressPercent}%</span></p>
           </div>
         </div>
 
-        <div class="w-full sm:w-64 bg-slate-800/90 rounded-full h-3 border border-slate-700 overflow-hidden relative">
+        <div class="w-full sm:w-64 bg-slate-800/90 rounded-full h-2.5 sm:h-3 border border-slate-700 overflow-hidden relative">
           <div class="bg-gradient-to-r from-red-500 via-amber-500 to-emerald-400 h-full rounded-full transition-all duration-700" style="width: ${progressPercent}%"></div>
         </div>
       </div>
 
       <!-- Tracks Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-5">
         
         <!-- TEMPERATURE TRACK -->
-        <div class="bg-slate-950/70 border border-red-950/60 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden group hover:border-red-600/50 transition">
-          <div class="flex items-center justify-between mb-2">
+        <div class="bg-slate-950/70 border border-red-950/60 rounded-xl p-3 sm:p-4 flex flex-col justify-between relative overflow-hidden group hover:border-red-600/50 transition">
+          <div class="flex items-center justify-between mb-1.5">
             <span class="text-xs font-bold text-red-400 uppercase tracking-wider flex items-center gap-1.5">
               <span>🌡️</span> Temperatura
             </span>
-            <span class="text-base font-black text-red-400 font-mono">
+            <span class="text-sm sm:text-base font-black text-red-400 font-mono">
               ${global.temperature > 0 ? '+' : ''}${global.temperature}°C
             </span>
           </div>
 
-          <div class="w-full bg-slate-900 rounded-full h-3 border border-slate-800 overflow-hidden my-2 relative">
+          <div class="w-full bg-slate-900 rounded-full h-2.5 sm:h-3 border border-slate-800 overflow-hidden my-1.5 sm:my-2 relative">
             <div class="bg-gradient-to-r from-blue-600 via-amber-500 to-red-500 h-full rounded-full transition-all duration-500" style="width: ${tempPercent}%"></div>
           </div>
 
-          <div class="flex justify-between items-center text-[10px] text-slate-400 mt-1">
+          <div class="flex justify-between items-center text-[9px] sm:text-[10px] text-slate-400 mt-1">
             <span>-30°C</span>
-            <span class="${global.temperature >= -24 ? 'text-amber-400 font-bold' : ''}">-24° (+1 Prod Calore)</span>
+            <span class="${global.temperature >= -24 ? 'text-amber-400 font-bold' : ''}">-24° (+Calore)</span>
             <span class="${global.temperature >= 0 ? 'text-blue-400 font-bold' : ''}">0° (Oceano)</span>
-            <span class="text-red-400 font-bold">+8°C (Max)</span>
+            <span class="text-red-400 font-bold">+8°C</span>
           </div>
         </div>
 
         <!-- OXYGEN TRACK -->
-        <div class="bg-slate-950/70 border border-emerald-950/60 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden group hover:border-emerald-600/50 transition">
-          <div class="flex items-center justify-between mb-2">
+        <div class="bg-slate-950/70 border border-emerald-950/60 rounded-xl p-3 sm:p-4 flex flex-col justify-between relative overflow-hidden group hover:border-emerald-600/50 transition">
+          <div class="flex items-center justify-between mb-1.5">
             <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
               <span>💨</span> Ossigeno
             </span>
-            <span class="text-base font-black text-emerald-400 font-mono">${global.oxygen}%</span>
+            <span class="text-sm sm:text-base font-black text-emerald-400 font-mono">${global.oxygen}%</span>
           </div>
 
-          <div class="w-full bg-slate-900 rounded-full h-3 border border-slate-800 overflow-hidden my-2 relative">
+          <div class="w-full bg-slate-900 rounded-full h-2.5 sm:h-3 border border-slate-800 overflow-hidden my-1.5 sm:my-2 relative">
             <div class="bg-gradient-to-r from-slate-600 via-emerald-600 to-emerald-400 h-full rounded-full transition-all duration-500" style="width: ${oxyPercent}%"></div>
           </div>
 
-          <div class="flex justify-between items-center text-[10px] text-slate-400 mt-1">
+          <div class="flex justify-between items-center text-[9px] sm:text-[10px] text-slate-400 mt-1">
             <span>0%</span>
-            <span class="${global.oxygen >= 8 ? 'text-red-400 font-bold' : ''}">8% (+1 Temp)</span>
+            <span class="${global.oxygen >= 8 ? 'text-red-400 font-bold' : ''}">8% (+Temp)</span>
             <span class="text-emerald-400 font-bold">14% (Max)</span>
           </div>
         </div>
 
         <!-- OCEANS TRACK -->
-        <div class="bg-slate-950/70 border border-blue-950/60 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden group hover:border-blue-600/50 transition">
-          <div class="flex items-center justify-between mb-2">
+        <div class="bg-slate-950/70 border border-blue-950/60 rounded-xl p-3 sm:p-4 flex flex-col justify-between relative overflow-hidden group hover:border-blue-600/50 transition">
+          <div class="flex items-center justify-between mb-1.5">
             <span class="text-xs font-bold text-blue-400 uppercase tracking-wider flex items-center gap-1.5">
               <span>🌊</span> Oceani (${global.oceansFlipped}/9)
             </span>
@@ -92,11 +92,11 @@ export function renderMarsBoard(global) {
           </div>
 
           <!-- 9 Ocean Tiles Grid -->
-          <div class="grid grid-cols-9 gap-1.5 my-1.5">
+          <div class="grid grid-cols-9 gap-1 my-1.5">
             ${global.oceanTiles.map((t, idx) => `
               <div 
                 title="Tessera Oceano #${idx + 1}: ${t.flipped ? t.label + ' (GIRATA)' : 'Non girata (Bonus: ' + t.label + ')'}"
-                class="h-8 rounded-lg flex items-center justify-center text-[11px] font-bold border transition-all duration-300 ${
+                class="h-7 sm:h-8 rounded-md sm:rounded-lg flex items-center justify-center text-[10px] sm:text-[11px] font-bold border transition-all duration-300 ${
                   t.flipped 
                     ? 'bg-gradient-to-br from-blue-600 to-cyan-500 border-cyan-300 text-white shadow-md shadow-blue-500/30' 
                     : 'bg-slate-900 border-slate-700/80 text-slate-600 hover:border-blue-500/50'
@@ -107,8 +107,8 @@ export function renderMarsBoard(global) {
             `).join('')}
           </div>
 
-          <div class="text-[10px] text-slate-400 flex justify-between items-center mt-1">
-            <span>Ogni oceano dà +1 TR e bonus immediato</span>
+          <div class="text-[9px] sm:text-[10px] text-slate-400 flex justify-between items-center mt-1">
+            <span>+1 TR per tessera</span>
             <span class="text-cyan-400 font-semibold font-mono">15 MC</span>
           </div>
         </div>
@@ -122,167 +122,167 @@ export function renderPlayerDashboard(player, isCurrentActive = true, standardAc
   const corp = player.corporation;
 
   return `
-    <div class="bg-slate-900/90 border border-slate-700/80 rounded-2xl p-5 shadow-2xl backdrop-blur-md">
+    <div class="bg-slate-900/90 border border-slate-700/80 rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-2xl backdrop-blur-md">
       <!-- Player & Corporation Banner -->
-      <div class="flex flex-wrap items-center justify-between gap-4 mb-5 border-b border-slate-800 pb-4">
-        <div class="flex items-center gap-4">
-          <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center text-3xl shadow-lg shadow-amber-900/40 border border-amber-300/40">
+      <div class="flex flex-wrap items-center justify-between gap-3 sm:gap-4 mb-3 sm:mb-5 border-b border-slate-800 pb-3 sm:pb-4">
+        <div class="flex items-center gap-2.5 sm:gap-4 min-w-0">
+          <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center text-xl sm:text-3xl shadow-lg shadow-amber-900/40 border border-amber-300/40 shrink-0">
             🏢
           </div>
-          <div>
-            <div class="flex items-center gap-2">
-              <h2 class="text-xl font-bold tracking-wide text-white">${player.name}</h2>
-              <span class="bg-slate-800 text-slate-300 text-xs px-2.5 py-0.5 rounded-full border border-slate-700 font-mono">
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h2 class="text-base sm:text-xl font-bold tracking-wide text-white truncate">${player.name}</h2>
+              <span class="bg-slate-800 text-slate-300 text-[10px] sm:text-xs px-2 py-0.5 rounded-full border border-slate-700 font-mono">
                 ${corp.name}
               </span>
             </div>
-            <p class="text-xs text-amber-300/90 font-medium mt-0.5">${corp.subtitle}</p>
-            <p class="text-[11px] text-slate-400 max-w-xl mt-1 leading-snug">${corp.description}</p>
+            <p class="text-[11px] sm:text-xs text-amber-300/90 font-medium">${corp.subtitle}</p>
+            <p class="text-[10px] sm:text-[11px] text-slate-400 max-w-xl mt-0.5 leading-snug line-clamp-2 sm:line-clamp-none">${corp.description}</p>
           </div>
         </div>
 
         <!-- TR Badge & Forest Tokens -->
-        <div class="flex items-center gap-4">
-          <div class="flex flex-col items-center bg-gradient-to-b from-red-600/30 to-red-900/40 border border-red-500/40 rounded-xl px-4 py-2 shadow-inner">
-            <span class="text-[10px] font-bold text-red-300 uppercase tracking-widest">Terraform Rating</span>
-            <span class="text-3xl font-black text-white font-mono leading-tight">${player.tr}</span>
-            <span class="text-[10px] text-red-200/80 font-mono">TR (+${player.tr} MC)</span>
+        <div class="flex items-center gap-2.5 sm:gap-4 shrink-0">
+          <div class="flex flex-col items-center bg-gradient-to-b from-red-600/30 to-red-900/40 border border-red-500/40 rounded-xl px-2.5 sm:px-4 py-1.5 sm:py-2 shadow-inner">
+            <span class="text-[9px] sm:text-[10px] font-bold text-red-300 uppercase tracking-widest">Rating TR</span>
+            <span class="text-xl sm:text-3xl font-black text-white font-mono leading-tight">${player.tr}</span>
+            <span class="text-[9px] sm:text-[10px] text-red-200/80 font-mono">+${player.tr} MC</span>
           </div>
 
-          <div class="flex flex-col items-center bg-emerald-950/40 border border-emerald-500/40 rounded-xl px-4 py-2 shadow-inner">
-            <span class="text-[10px] font-bold text-emerald-300 uppercase tracking-widest">Foreste</span>
-            <span class="text-3xl font-black text-emerald-300 font-mono leading-tight">${player.forestTokens}</span>
-            <span class="text-[10px] text-emerald-400 font-mono">${player.forestTokens} PV</span>
+          <div class="flex flex-col items-center bg-emerald-950/40 border border-emerald-500/40 rounded-xl px-2.5 sm:px-4 py-1.5 sm:py-2 shadow-inner">
+            <span class="text-[9px] sm:text-[10px] font-bold text-emerald-300 uppercase tracking-widest">Foreste</span>
+            <span class="text-xl sm:text-3xl font-black text-emerald-300 font-mono leading-tight">${player.forestTokens}</span>
+            <span class="text-[9px] sm:text-[10px] text-emerald-400 font-mono">${player.forestTokens} PV</span>
           </div>
         </div>
       </div>
 
-      <!-- Resource Stocks & Production Grid -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-5">
+      <!-- Resource Stocks & Production Grid (3 cols on mobile, 6 cols on large screens) -->
+      <div class="grid grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 mb-3 sm:mb-5">
         
         <!-- MC -->
-        <div class="bg-slate-950/80 border border-amber-900/50 rounded-xl p-3 flex flex-col justify-between">
-          <div class="flex items-center justify-between text-xs text-amber-400 font-bold uppercase">
+        <div class="bg-slate-950/80 border border-amber-900/50 rounded-xl p-2 sm:p-3 flex flex-col justify-between">
+          <div class="flex items-center justify-between text-[11px] sm:text-xs text-amber-400 font-bold uppercase">
             <span>💰 MC</span>
-            <span class="text-[10px] bg-amber-950/70 border border-amber-700/50 text-amber-300 px-1.5 py-0.5 rounded font-mono">
-              Prod +${player.production.mc}
+            <span class="text-[9px] sm:text-[10px] bg-amber-950/70 border border-amber-700/50 text-amber-300 px-1 py-0.5 rounded font-mono">
+              +${player.production.mc}
             </span>
           </div>
-          <div class="text-2xl font-black text-amber-300 font-mono my-1">${player.resources.mc}</div>
-          <div class="text-[10px] text-slate-400">Disponibili</div>
+          <div class="text-xl sm:text-2xl font-black text-amber-300 font-mono my-0.5 sm:my-1">${player.resources.mc}</div>
+          <div class="text-[9px] sm:text-[10px] text-slate-400">Crediti</div>
         </div>
 
         <!-- CALORE -->
-        <div class="bg-slate-950/80 border border-orange-900/50 rounded-xl p-3 flex flex-col justify-between">
-          <div class="flex items-center justify-between text-xs text-orange-400 font-bold uppercase">
+        <div class="bg-slate-950/80 border border-orange-900/50 rounded-xl p-2 sm:p-3 flex flex-col justify-between">
+          <div class="flex items-center justify-between text-[11px] sm:text-xs text-orange-400 font-bold uppercase">
             <span>🔥 Calore</span>
-            <span class="text-[10px] bg-orange-950/70 border border-orange-700/50 text-orange-300 px-1.5 py-0.5 rounded font-mono">
-              Prod +${player.production.heat}
+            <span class="text-[9px] sm:text-[10px] bg-orange-950/70 border border-orange-700/50 text-orange-300 px-1 py-0.5 rounded font-mono">
+              +${player.production.heat}
             </span>
           </div>
-          <div class="text-2xl font-black text-orange-400 font-mono my-1">${player.resources.heat}</div>
-          <div class="text-[10px] text-slate-400">${player.corporation?.heatAsMC ? 'Spendi come MC' : '8 = +1 Temp'}</div>
+          <div class="text-xl sm:text-2xl font-black text-orange-400 font-mono my-0.5 sm:my-1">${player.resources.heat}</div>
+          <div class="text-[9px] sm:text-[10px] text-slate-400">${player.corporation?.heatAsMC ? 'Usa come MC' : '8 = +1 Temp'}</div>
         </div>
 
         <!-- PIANTE -->
-        <div class="bg-slate-950/80 border border-emerald-900/50 rounded-xl p-3 flex flex-col justify-between">
-          <div class="flex items-center justify-between text-xs text-emerald-400 font-bold uppercase">
+        <div class="bg-slate-950/80 border border-emerald-900/50 rounded-xl p-2 sm:p-3 flex flex-col justify-between">
+          <div class="flex items-center justify-between text-[11px] sm:text-xs text-emerald-400 font-bold uppercase">
             <span>🌿 Piante</span>
-            <span class="text-[10px] bg-emerald-950/70 border border-emerald-700/50 text-emerald-300 px-1.5 py-0.5 rounded font-mono">
-              Prod +${player.production.plants}
+            <span class="text-[9px] sm:text-[10px] bg-emerald-950/70 border border-emerald-700/50 text-emerald-300 px-1 py-0.5 rounded font-mono">
+              +${player.production.plants}
             </span>
           </div>
-          <div class="text-2xl font-black text-emerald-400 font-mono my-1">${player.resources.plants}</div>
-          <div class="text-[10px] text-slate-400">${player.customStandardActionCosts?.forestPlants || 8} = Foresta</div>
+          <div class="text-xl sm:text-2xl font-black text-emerald-400 font-mono my-0.5 sm:my-1">${player.resources.plants}</div>
+          <div class="text-[9px] sm:text-[10px] text-slate-400">${player.customStandardActionCosts?.forestPlants || 8} = Foresta</div>
         </div>
 
         <!-- CARTE PROD -->
-        <div class="bg-slate-950/80 border border-pink-900/50 rounded-xl p-3 flex flex-col justify-between">
-          <div class="flex items-center justify-between text-xs text-pink-400 font-bold uppercase">
+        <div class="bg-slate-950/80 border border-pink-900/50 rounded-xl p-2 sm:p-3 flex flex-col justify-between">
+          <div class="flex items-center justify-between text-[11px] sm:text-xs text-pink-400 font-bold uppercase">
             <span>🃏 Carte</span>
-            <span class="text-[10px] bg-pink-950/70 border border-pink-700/50 text-pink-300 px-1.5 py-0.5 rounded font-mono">
-              Prod +${player.production.cards}
+            <span class="text-[9px] sm:text-[10px] bg-pink-950/70 border border-pink-700/50 text-pink-300 px-1 py-0.5 rounded font-mono">
+              +${player.production.cards}
             </span>
           </div>
-          <div class="text-2xl font-black text-pink-300 font-mono my-1">${player.hand.length}</div>
-          <div class="text-[10px] text-slate-400">In mano</div>
+          <div class="text-xl sm:text-2xl font-black text-pink-300 font-mono my-0.5 sm:my-1">${player.hand.length}</div>
+          <div class="text-[9px] sm:text-[10px] text-slate-400">In mano</div>
         </div>
 
         <!-- ACCIAIO -->
-        <div class="bg-slate-950/80 border border-amber-950/60 rounded-xl p-3 flex flex-col justify-between">
-          <div class="flex items-center justify-between text-xs text-amber-500 font-bold uppercase">
+        <div class="bg-slate-950/80 border border-amber-950/60 rounded-xl p-2 sm:p-3 flex flex-col justify-between">
+          <div class="flex items-center justify-between text-[11px] sm:text-xs text-amber-500 font-bold uppercase">
             <span>🏗️ Acciaio</span>
-            <span class="text-[10px] text-slate-400 font-mono">${2 + (player.corporation?.steelValueBonus || 0)} MC/cad</span>
+            <span class="text-[9px] text-slate-400 font-mono">${2 + (player.corporation?.steelValueBonus || 0)}MC</span>
           </div>
-          <div class="text-2xl font-black text-amber-400 font-mono my-1">${player.resources.steel || 0}</div>
-          <div class="text-[10px] text-slate-400">Sconto Edifici</div>
+          <div class="text-xl sm:text-2xl font-black text-amber-400 font-mono my-0.5 sm:my-1">${player.resources.steel || 0}</div>
+          <div class="text-[9px] sm:text-[10px] text-slate-400">Sconto Edifici</div>
         </div>
 
         <!-- TITANIO -->
-        <div class="bg-slate-950/80 border border-slate-700/60 rounded-xl p-3 flex flex-col justify-between">
-          <div class="flex items-center justify-between text-xs text-slate-300 font-bold uppercase">
+        <div class="bg-slate-950/80 border border-slate-700/60 rounded-xl p-2 sm:p-3 flex flex-col justify-between">
+          <div class="flex items-center justify-between text-[11px] sm:text-xs text-slate-300 font-bold uppercase">
             <span>🚀 Titanio</span>
-            <span class="text-[10px] text-slate-400 font-mono">${3 + (player.corporation?.titaniumValueBonus || 0)} MC/cad</span>
+            <span class="text-[9px] text-slate-400 font-mono">${3 + (player.corporation?.titaniumValueBonus || 0)}MC</span>
           </div>
-          <div class="text-2xl font-black text-slate-200 font-mono my-1">${player.resources.titanium || 0}</div>
-          <div class="text-[10px] text-slate-400">Sconto Spazio</div>
+          <div class="text-xl sm:text-2xl font-black text-slate-200 font-mono my-0.5 sm:my-1">${player.resources.titanium || 0}</div>
+          <div class="text-[9px] sm:text-[10px] text-slate-400">Sconto Spazio</div>
         </div>
 
       </div>
 
       <!-- Standard Actions Bar (Visible in Phase III) -->
       ${standardActionsEnabled ? `
-        <div class="bg-amber-950/30 border border-amber-600/40 rounded-xl p-3.5 mb-2">
+        <div class="bg-amber-950/30 border border-amber-600/40 rounded-xl p-2.5 sm:p-3.5 mb-2">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
               <span>⚡</span> Azioni Standard (Fase III Attiva)
             </span>
-            <span class="text-[11px] text-slate-400">Eseguibili illimitatamente se hai le risorse</span>
+            <span class="text-[10px] sm:text-[11px] text-slate-400">Illimitate finché hai risorse</span>
           </div>
-          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1.5 sm:gap-2">
             <button 
               data-action="standard" data-action-id="forest_plants"
-              class="px-2.5 py-2 rounded-lg bg-emerald-900/60 hover:bg-emerald-700 text-emerald-200 border border-emerald-500/50 text-xs font-bold flex flex-col items-center justify-center transition disabled:opacity-40 disabled:cursor-not-allowed"
+              class="px-2 py-2 rounded-lg bg-emerald-900/60 hover:bg-emerald-700 text-emerald-200 border border-emerald-500/50 text-xs font-bold flex flex-col items-center justify-center transition disabled:opacity-40 disabled:cursor-not-allowed"
               ${player.resources.plants < (player.customStandardActionCosts?.forestPlants || 8) ? 'disabled' : ''}
             >
               <span>Foresta (${player.customStandardActionCosts?.forestPlants || 8} Piante)</span>
-              <span class="text-[10px] font-normal text-emerald-300 mt-0.5">+1 Ossigeno, +1 PV</span>
+              <span class="text-[9px] sm:text-[10px] font-normal text-emerald-300 mt-0.5">+1 O2, +1 PV</span>
             </button>
 
             <button 
               data-action="standard" data-action-id="temp_heat"
-              class="px-2.5 py-2 rounded-lg bg-orange-900/60 hover:bg-orange-700 text-orange-200 border border-orange-500/50 text-xs font-bold flex flex-col items-center justify-center transition disabled:opacity-40 disabled:cursor-not-allowed"
+              class="px-2 py-2 rounded-lg bg-orange-900/60 hover:bg-orange-700 text-orange-200 border border-orange-500/50 text-xs font-bold flex flex-col items-center justify-center transition disabled:opacity-40 disabled:cursor-not-allowed"
               ${player.resources.heat < 8 ? 'disabled' : ''}
             >
-              <span>Temperatura (8 Calore)</span>
-              <span class="text-[10px] font-normal text-orange-300 mt-0.5">+1 Temp, +1 TR</span>
+              <span>Temp (8 Calore)</span>
+              <span class="text-[9px] sm:text-[10px] font-normal text-orange-300 mt-0.5">+1 Temp, +1 TR</span>
             </button>
 
             <button 
               data-action="standard" data-action-id="ocean_mc"
-              class="px-2.5 py-2 rounded-lg bg-blue-900/60 hover:bg-blue-700 text-blue-200 border border-blue-500/50 text-xs font-bold flex flex-col items-center justify-center transition disabled:opacity-40 disabled:cursor-not-allowed"
+              class="px-2 py-2 rounded-lg bg-blue-900/60 hover:bg-blue-700 text-blue-200 border border-blue-500/50 text-xs font-bold flex flex-col items-center justify-center transition disabled:opacity-40 disabled:cursor-not-allowed"
               ${player.resources.mc < 15 ? 'disabled' : ''}
             >
               <span>Oceano (15 MC)</span>
-              <span class="text-[10px] font-normal text-blue-300 mt-0.5">+1 Oceano, +1 TR</span>
+              <span class="text-[9px] sm:text-[10px] font-normal text-blue-300 mt-0.5">+1 Oceano, +1 TR</span>
             </button>
 
             <button 
               data-action="standard" data-action-id="temp_mc"
-              class="px-2.5 py-2 rounded-lg bg-red-900/60 hover:bg-red-700 text-red-200 border border-red-500/50 text-xs font-bold flex flex-col items-center justify-center transition disabled:opacity-40 disabled:cursor-not-allowed"
+              class="px-2 py-2 rounded-lg bg-red-900/60 hover:bg-red-700 text-red-200 border border-red-500/50 text-xs font-bold flex flex-col items-center justify-center transition disabled:opacity-40 disabled:cursor-not-allowed"
               ${player.resources.mc < 14 ? 'disabled' : ''}
             >
-              <span>Temperatura (14 MC)</span>
-              <span class="text-[10px] font-normal text-red-300 mt-0.5">+1 Temp, +1 TR</span>
+              <span>Temp (14 MC)</span>
+              <span class="text-[9px] sm:text-[10px] font-normal text-red-300 mt-0.5">+1 Temp, +1 TR</span>
             </button>
 
             <button 
               data-action="standard" data-action-id="forest_mc"
-              class="px-2.5 py-2 rounded-lg bg-teal-900/60 hover:bg-teal-700 text-teal-200 border border-teal-500/50 text-xs font-bold flex flex-col items-center justify-center transition disabled:opacity-40 disabled:cursor-not-allowed"
+              class="px-2 py-2 rounded-lg bg-teal-900/60 hover:bg-teal-700 text-teal-200 border border-teal-500/50 text-xs font-bold flex flex-col items-center justify-center transition disabled:opacity-40 disabled:cursor-not-allowed col-span-2 sm:col-span-1"
               ${player.resources.mc < 20 ? 'disabled' : ''}
             >
               <span>Foresta (20 MC)</span>
-              <span class="text-[10px] font-normal text-teal-300 mt-0.5">+1 Ossigeno, +1 PV</span>
+              <span class="text-[9px] sm:text-[10px] font-normal text-teal-300 mt-0.5">+1 O2, +1 PV</span>
             </button>
           </div>
         </div>
@@ -491,82 +491,84 @@ export function renderPhaseSelectionModal(player, round = 1) {
   const lastPhase = player.lastSelectedPhase;
 
   return `
-    <div class="bg-slate-900 border-2 border-amber-500/60 rounded-3xl max-w-5xl w-full p-5 sm:p-7 shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
+    <div class="bg-slate-900 border-2 border-amber-500/60 rounded-2xl sm:rounded-3xl max-w-5xl w-full p-3 sm:p-6 shadow-2xl overflow-hidden flex flex-col max-h-[96vh] sm:max-h-[92vh]">
       
       <!-- Modal Header -->
-      <div class="text-center mb-3 relative">
+      <div class="text-center mb-2 sm:mb-3 relative pr-8 sm:pr-0">
         <!-- Close / Minimize Button -->
         <button 
           data-action="close_planning_modal"
-          class="absolute -top-1 -right-1 py-1 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center gap-1.5 font-mono text-xs border border-slate-700 transition shadow"
+          class="absolute top-0 right-0 py-1 px-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center gap-1 font-mono text-[11px] sm:text-xs border border-slate-700 transition shadow"
           title="Chiudi per esaminare liberamente la plancia e la mano"
         >
           <span>👁️</span>
-          <span>Guarda Plancia / Riduci</span>
+          <span class="hidden sm:inline">Guarda Plancia</span>
           <span>✕</span>
         </button>
 
-        <span class="text-xs font-bold text-amber-400 uppercase tracking-widest block font-mono mb-0.5">
+        <span class="text-[10px] sm:text-xs font-bold text-amber-400 uppercase tracking-widest block font-mono mb-0.5">
           Passo 1: Pianificazione Simultanea • Round ${round}
         </span>
-        <h2 class="text-xl sm:text-2xl font-black text-white font-orbitron uppercase tracking-wide">
+        <h2 class="text-base sm:text-2xl font-black text-white font-orbitron uppercase tracking-wide">
           Seleziona la tua Carta Fase
         </h2>
 
         <!-- Quick Resources Bar -->
-        <div class="flex items-center justify-center gap-2.5 text-xs font-mono bg-slate-950/80 py-1 px-3 rounded-xl border border-slate-800 my-2 flex-wrap">
+        <div class="flex items-center justify-center gap-1.5 sm:gap-2.5 text-[10px] sm:text-xs font-mono bg-slate-950/80 py-1 px-2 sm:px-3 rounded-xl border border-slate-800 my-1 sm:my-2 flex-wrap">
           <span class="text-amber-400 font-bold">💰 ${player.resources.mc} MC (+${player.production.mc})</span>
           <span class="text-slate-600">•</span>
           <span class="text-orange-400 font-bold">🔥 ${player.resources.heat} Calore (+${player.production.heat})</span>
           <span class="text-slate-600">•</span>
           <span class="text-emerald-400 font-bold">🌿 ${player.resources.plants} Piante (+${player.production.plants})</span>
-          <span class="text-slate-600">•</span>
-          <span class="text-amber-300 font-bold">🏗️ ${player.resources.steel || 0} Acciaio</span>
-          <span class="text-slate-600">•</span>
-          <span class="text-slate-300 font-bold">🚀 ${player.resources.titanium || 0} Titanio</span>
+          <span class="text-slate-600 hidden xs:inline">•</span>
+          <span class="text-amber-300 font-bold hidden xs:inline">🏗️ ${player.resources.steel || 0}</span>
+          <span class="text-slate-600 hidden xs:inline">•</span>
+          <span class="text-slate-300 font-bold hidden xs:inline">🚀 ${player.resources.titanium || 0}</span>
           <span class="text-slate-600">•</span>
           <span class="text-red-400 font-bold">⭐ ${player.tr} TR</span>
         </div>
 
         ${lastPhase ? `
-          <div class="text-xs text-red-400 font-semibold bg-red-950/40 py-1 px-3 rounded-lg border border-red-800/40 inline-block font-mono">
+          <div class="text-[10px] sm:text-xs text-red-400 font-semibold bg-red-950/50 py-0.5 sm:py-1 px-2 sm:px-3 rounded-lg border border-red-800/40 inline-block font-mono">
             ⚠️ La Fase ${lastPhase} è bloccata questo round (regola di non-consecutività)
           </div>
         ` : ''}
       </div>
 
       <!-- 5 Phase Cards Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5 p-1 mb-3">
+      <div class="grid grid-cols-1 sm:grid-cols-5 gap-1.5 sm:gap-2.5 p-0.5 sm:p-1 mb-2 overflow-y-auto max-h-[46vh] sm:max-h-none">
         ${Object.values(PHASES).map(phase => {
           const isForbidden = phase.id === lastPhase;
           return `
             <div 
               data-phase-id="${phase.id}"
-              class="phase-card-option border-2 rounded-xl p-3 flex flex-col justify-between cursor-pointer transition-all duration-200 relative ${
+              class="phase-card-option border-2 rounded-xl p-2 sm:p-3 flex sm:flex-col justify-between items-center sm:items-stretch cursor-pointer transition-all duration-200 relative ${
                 isForbidden 
                   ? 'opacity-40 cursor-not-allowed border-slate-800 bg-slate-950' 
                   : 'bg-slate-950/80 hover:scale-102 hover:shadow-xl hover:border-amber-400 border-slate-700'
               }"
               style="border-top-color: ${phase.color};"
             >
-              <div>
-                <div class="flex items-center justify-between mb-1">
+              <div class="flex items-center sm:block gap-2 min-w-0">
+                <div class="flex items-center gap-1.5 sm:justify-between mb-0 sm:mb-1 shrink-0">
                   <span class="w-6 h-6 rounded-full flex items-center justify-center font-black text-xs text-slate-950 font-mono" style="background-color: ${phase.color}">
                     ${phase.id}
                   </span>
-                  <span class="text-[9px] text-slate-400 uppercase font-mono">${phase.name}</span>
+                  <span class="text-[9px] text-slate-400 uppercase font-mono hidden sm:inline">${phase.name}</span>
                 </div>
 
-                <h3 class="font-bold text-xs text-white mb-1">${phase.nameIt}</h3>
-                <p class="text-[10px] text-slate-300 mb-2 leading-snug">${phase.description}</p>
+                <div class="min-w-0">
+                  <h3 class="font-bold text-xs text-white leading-tight">${phase.nameIt}</h3>
+                  <p class="text-[10px] text-slate-300 leading-snug hidden sm:block mb-2">${phase.description}</p>
+                </div>
               </div>
 
-              <div class="border-t border-slate-800 pt-1.5 mt-1">
+              <div class="border-l sm:border-l-0 sm:border-t border-slate-800 pl-2 sm:pl-0 sm:pt-1.5 shrink-0 text-right sm:text-left">
                 <span class="text-[9px] text-amber-400 font-bold uppercase tracking-wider block">Bonus Guida:</span>
-                <p class="text-[9px] text-amber-200/90 leading-tight">${phase.bonusDescription}</p>
+                <p class="text-[9px] text-amber-200/90 leading-tight max-w-[130px] sm:max-w-none truncate sm:whitespace-normal">${phase.bonusDescription}</p>
                 
                 ${isForbidden ? `
-                  <div class="mt-1.5 text-center text-[9px] font-bold text-red-400 uppercase bg-red-950/50 py-0.5 rounded border border-red-800/40 font-mono">
+                  <div class="mt-0.5 sm:mt-1.5 text-center text-[9px] font-bold text-red-400 uppercase bg-red-950/50 py-0.5 rounded border border-red-800/40 font-mono">
                     Bloccata
                   </div>
                 ` : ''}
@@ -576,18 +578,22 @@ export function renderPhaseSelectionModal(player, round = 1) {
         }).join('')}
       </div>
 
-      <!-- Live Hand Preview Section -->
-      <div class="border-t border-slate-800 pt-2.5 mb-3 flex-1 flex flex-col min-h-0">
-        <div class="flex items-center justify-between mb-1.5">
-          <span class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 font-mono">
+      <!-- Live Hand Preview Section (Collapsible Accordion on Mobile) -->
+      <div class="border-t border-slate-800 pt-1.5 sm:pt-2 mb-2 flex-1 flex flex-col min-h-0">
+        <button 
+          id="toggle-modal-hand-btn" 
+          type="button" 
+          class="flex items-center justify-between w-full py-1.5 px-2.5 bg-slate-950/60 hover:bg-slate-950 border border-slate-800 rounded-lg text-xs font-mono text-slate-300 transition"
+        >
+          <span class="flex items-center gap-1.5 font-bold">
             <span>🃏</span> Le tue Carte in Mano (${player.hand.length})
           </span>
-          <span class="text-[10px] text-slate-400 font-mono">
-            Ispeziona le tue carte per decidere la fase migliore
+          <span id="modal-hand-arrow" class="text-[10px] text-amber-400 font-bold">
+            Mostra / Nascondi ▾
           </span>
-        </div>
+        </button>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 overflow-y-auto p-1.5 bg-slate-950/60 rounded-xl border border-slate-800 flex-1 max-h-40">
+        <div id="modal-hand-container" class="hidden sm:grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 overflow-y-auto p-1.5 bg-slate-950/80 rounded-xl border border-slate-800 flex-1 max-h-36 sm:max-h-44 mt-1.5">
           ${player.hand.map(card => {
             const isGreen = card.type === 'green';
             const isBlue = card.type === 'blue';
@@ -595,13 +601,13 @@ export function renderPhaseSelectionModal(player, round = 1) {
             const typeBadge = isGreen ? 'text-emerald-400' : isBlue ? 'text-blue-400' : 'text-red-400';
 
             return `
-              <div class="border rounded-lg p-2 flex flex-col justify-between text-[10px] shadow-sm ${typeColor}">
+              <div class="border rounded-lg p-1.5 sm:p-2 flex flex-col justify-between text-[10px] shadow-sm ${typeColor}">
                 <div>
                   <div class="flex items-center justify-between mb-1">
                     <span class="font-mono font-bold text-amber-400">${card.cost} MC</span>
                     <span class="uppercase font-bold text-[9px] ${typeBadge}">${card.type}</span>
                   </div>
-                  <div class="font-bold text-white text-[11px] leading-tight mb-1 truncate" title="${card.nameIt || card.name}">
+                  <div class="font-bold text-white text-[10px] sm:text-[11px] leading-tight mb-1 truncate" title="${card.nameIt || card.name}">
                     ${card.nameIt || card.name}
                   </div>
                   <div class="text-slate-300 text-[9px] line-clamp-2 leading-tight">
@@ -610,7 +616,7 @@ export function renderPhaseSelectionModal(player, round = 1) {
                 </div>
                 ${card.requirements ? `
                   <div class="mt-1 text-[8px] text-amber-300 font-mono truncate">
-                    ⚠️ Req: ${card.requirements.minTemperature ? 'Temp ' + card.requirements.minTemperature + '° ' : ''}${card.requirements.minOxygen ? 'O2 ' + card.requirements.minOxygen + '% ' : ''}${card.requirements.minOceans ? 'Oceani ' + card.requirements.minOceans : ''}
+                    ⚠️ Req
                   </div>
                 ` : ''}
               </div>
@@ -619,22 +625,22 @@ export function renderPhaseSelectionModal(player, round = 1) {
         </div>
       </div>
 
-      <!-- Selected Phase Action Bar -->
-      <div class="flex items-center justify-between pt-3 border-t border-slate-800">
-        <div id="selected-phase-hint" class="text-xs text-slate-400 font-medium">
-          Nessuna fase selezionata. Clicca su una delle 5 carte fase sopra.
+      <!-- Sticky Selected Phase Action Bar -->
+      <div class="sticky bottom-0 bg-slate-900 border-t border-slate-800 pt-2 sm:pt-3 mt-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+        <div id="selected-phase-hint" class="text-[11px] sm:text-xs text-slate-400 font-medium text-center sm:text-left">
+          Nessuna fase selezionata. Clicca su una delle 5 fasi sopra.
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 w-full sm:w-auto">
           <button 
             data-action="close_planning_modal"
-            class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs uppercase transition font-mono"
+            class="hidden sm:block px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs uppercase transition font-mono"
           >
             Guarda Plancia
           </button>
           <button 
             id="confirm-phase-btn"
             disabled
-            class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs font-orbitron uppercase tracking-wider transition shadow-lg shadow-amber-500/20 disabled:opacity-40 disabled:cursor-not-allowed"
+            class="w-full sm:w-auto px-6 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs sm:text-sm font-orbitron uppercase tracking-wider transition shadow-lg shadow-amber-500/20 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Conferma Selezione Fase
           </button>
@@ -646,52 +652,52 @@ export function renderPhaseSelectionModal(player, round = 1) {
 
 export function renderResearchModal(offer, onConfirm) {
   return `
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-4xl w-full p-6 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-      <div class="text-center mb-6">
-          <span class="text-xs font-bold text-pink-400 uppercase tracking-widest block mb-1">Fase V: Ricerca Progetti</span>
-          <h2 class="text-2xl font-black text-white tracking-wide">Scegli le carte da tenere</h2>
-          <p class="text-xs text-slate-400 mt-1">
-            Hai pescato ${offer.cards.length} carte. Seleziona esattamente <span class="text-pink-400 font-bold">${offer.keepCount}</span> ${offer.keepCount === 1 ? 'carta' : 'carte'} da aggiungere alla tua mano. Le altre verranno scartate.
-          </p>
-        </div>
-
-        <!-- Cards to pick -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 overflow-y-auto p-1 mb-6">
-          ${offer.cards.map(card => `
-            <div 
-              data-research-card-id="${card.id}"
-              class="research-card-choice border-2 border-slate-700 rounded-xl p-3 bg-slate-950/80 cursor-pointer transition-all duration-200 hover:border-pink-500 flex flex-col justify-between"
-            >
-              <div>
-                <div class="flex items-center justify-between mb-1">
-                  <span class="text-amber-400 font-mono font-bold text-xs">${card.cost} MC</span>
-                  <span class="text-[10px] text-pink-400 uppercase font-bold">${card.type}</span>
-                </div>
-                <h4 class="font-bold text-xs text-white leading-tight mb-1">${card.nameIt || card.name}</h4>
-                <p class="text-[10px] text-slate-300 leading-snug">${card.description}</p>
-              </div>
-
-              <div class="pt-2 border-t border-slate-800 mt-2 flex items-center justify-between">
-                <span class="text-[10px] text-slate-400">Clicca per selezionare</span>
-                <input type="checkbox" class="research-checkbox pointer-events-none w-4 h-4 rounded text-pink-500 bg-slate-800 border-slate-700" value="${card.id}">
-              </div>
-            </div>
-          `).join('')}
-        </div>
-
-        <div class="flex items-center justify-between pt-4 border-t border-slate-800">
-          <div id="research-selection-counter" class="text-xs text-pink-400 font-semibold font-mono">
-            Selezionate: 0 / ${offer.keepCount}
-          </div>
-          <button 
-            id="confirm-research-btn"
-            disabled
-            class="px-6 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-500 text-white font-black text-sm transition shadow-lg shadow-pink-600/30 disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            Aggiungi alla Mano
-          </button>
-        </div>
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-4xl w-full p-3 sm:p-6 shadow-2xl overflow-hidden flex flex-col max-h-[94vh] sm:max-h-[90vh]">
+      <div class="text-center mb-3 sm:mb-5">
+        <span class="text-[10px] sm:text-xs font-bold text-pink-400 uppercase tracking-widest block mb-0.5">Fase V: Ricerca Progetti</span>
+        <h2 class="text-xl sm:text-2xl font-black text-white tracking-wide">Scegli le carte da tenere</h2>
+        <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">
+          Hai pescato ${offer.cards.length} carte. Seleziona esattamente <span class="text-pink-400 font-bold">${offer.keepCount}</span> ${offer.keepCount === 1 ? 'carta' : 'carte'}.
+        </p>
       </div>
+
+      <!-- Cards to pick (2 cols on mobile, 3 on tablet, 5 on desktop) -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 overflow-y-auto p-1 mb-3 flex-1">
+        ${offer.cards.map(card => `
+          <div 
+            data-research-card-id="${card.id}"
+            class="research-card-choice border-2 border-slate-700 rounded-xl p-2.5 sm:p-3 bg-slate-950/80 cursor-pointer transition-all duration-200 hover:border-pink-500 flex flex-col justify-between"
+          >
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-amber-400 font-mono font-bold text-xs">${card.cost} MC</span>
+                <span class="text-[10px] text-pink-400 uppercase font-bold">${card.type}</span>
+              </div>
+              <h4 class="font-bold text-xs text-white leading-tight mb-1 truncate" title="${card.nameIt || card.name}">${card.nameIt || card.name}</h4>
+              <p class="text-[10px] text-slate-300 leading-snug line-clamp-3">${card.description}</p>
+            </div>
+
+            <div class="pt-2 border-t border-slate-800 mt-2 flex items-center justify-between">
+              <span class="text-[10px] text-slate-400">Tocca per scegliere</span>
+              <input type="checkbox" class="research-checkbox pointer-events-none w-4 h-4 rounded text-pink-500 bg-slate-800 border-slate-700" value="${card.id}">
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="sticky bottom-0 bg-slate-900 border-t border-slate-800 pt-3 mt-auto flex items-center justify-between gap-2">
+        <div id="research-selection-counter" class="text-xs text-pink-400 font-semibold font-mono">
+          Selezionate: 0 / ${offer.keepCount}
+        </div>
+        <button 
+          id="confirm-research-btn"
+          disabled
+          class="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-pink-600 hover:bg-pink-500 text-white font-black text-xs sm:text-sm uppercase tracking-wider transition shadow-lg shadow-pink-600/30 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          Aggiungi alla Mano
+        </button>
+      </div>
+    </div>
   `;
 }
 

@@ -2,7 +2,7 @@
 <html lang="it" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Terraforming Mars: Ares Expedition - Digital Edition</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -33,11 +33,15 @@
         radial-gradient(at 100% 100%, rgba(37, 99, 235, 0.12) 0px, transparent 50%),
         radial-gradient(at 50% 50%, rgba(15, 23, 42, 0.5) 0px, transparent 100%);
       background-attachment: fixed;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
     /* Custom scrollbar */
     ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
     }
     ::-webkit-scrollbar-track {
       background: #0f172a;
@@ -54,71 +58,117 @@
 <body class="text-slate-100 min-h-screen flex flex-col font-sans selection:bg-amber-500 selection:text-slate-950">
 
   <!-- TOP APP BAR -->
-  <header class="bg-slate-950/80 border-b border-slate-800/80 backdrop-blur-md sticky top-0 z-40 px-4 py-3">
-    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+  <header class="bg-slate-950/90 border-b border-slate-800/80 backdrop-blur-md sticky top-0 z-40 px-3 sm:px-4 py-2 sm:py-2.5">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-3">
       <!-- Title & Logo -->
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-red-600 to-amber-500 flex items-center justify-center text-xl shadow-lg shadow-red-600/30 font-black">
+      <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-red-600 to-amber-500 flex items-center justify-center text-base sm:text-xl shadow-lg shadow-red-600/30 font-black shrink-0">
           🚀
         </div>
-        <div>
-          <h1 class="text-lg font-black tracking-wider text-white uppercase font-mono leading-none">
-            Terraforming Mars: <span class="text-amber-400">Ares Expedition</span>
+        <div class="min-w-0">
+          <h1 class="text-xs sm:text-base font-black tracking-wider text-white uppercase font-mono leading-tight truncate">
+            <span class="hidden xs:inline">Terraforming Mars: </span><span class="text-amber-400">Ares Expedition</span>
           </h1>
-          <span class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Edizione Digitale Browser • Single Player vs IA</span>
+          <span class="hidden sm:block text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Edizione Digitale Browser • Single Player vs IA</span>
         </div>
       </div>
 
       <!-- Navigation & Action Controls -->
-      <div class="flex items-center gap-2 sm:gap-3">
+      <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
         <!-- Round Badge -->
-        <span id="round-indicator" class="bg-slate-900 border border-slate-700 text-amber-300 font-mono font-bold text-xs px-3 py-1.5 rounded-lg shadow-inner">
-          Round 1
+        <span id="round-indicator" class="bg-slate-900 border border-slate-700 text-amber-300 font-mono font-bold text-[11px] sm:text-xs px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg shadow-inner">
+          R1
         </span>
 
         <!-- Audio Toggle -->
-        <button id="sound-toggle-btn" class="text-xs bg-slate-900 hover:bg-slate-800 border border-slate-700 text-amber-400 font-bold px-3 py-1.5 rounded-lg transition">
-          🔊 Audio ON
+        <button id="sound-toggle-btn" title="Attiva/Disattiva Audio" class="text-xs bg-slate-900 hover:bg-slate-800 border border-slate-700 text-amber-400 font-bold px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition">
+          <span class="sm:hidden">🔊</span>
+          <span class="hidden sm:inline">🔊 Audio ON</span>
         </button>
 
         <!-- Rules Help -->
-        <button id="rules-btn" class="text-xs bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white font-bold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
+        <button id="rules-btn" title="Regolamento" class="text-xs bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white font-bold px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition flex items-center gap-1.5">
           <span>📖</span>
-          <span class="hidden sm:inline">Regolamento</span>
+          <span class="hidden md:inline">Regole</span>
         </button>
 
         <!-- Import Deck -->
-        <button id="import-deck-btn" class="text-xs bg-slate-900 hover:bg-slate-800 border border-slate-700 text-cyan-400 font-bold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
+        <button id="import-deck-btn" title="Importa Mazzo JSON" class="text-xs bg-slate-900 hover:bg-slate-800 border border-slate-700 text-cyan-400 font-bold px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition hidden sm:flex items-center gap-1.5">
           <span>📥</span>
-          <span class="hidden sm:inline">Importa Mazzo</span>
+          <span class="hidden lg:inline">Importa Mazzo</span>
         </button>
 
         <!-- Main Menu Button -->
-        <button id="open-menu-btn" class="text-xs bg-amber-950/60 hover:bg-amber-900 border border-amber-600/60 text-amber-300 font-bold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
+        <button id="open-menu-btn" title="Menu Principale" class="text-xs bg-amber-950/60 hover:bg-amber-900 border border-amber-600/60 text-amber-300 font-bold px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition flex items-center gap-1.5">
           <span>🏠</span>
-          <span>Menu</span>
+          <span class="hidden sm:inline">Menu</span>
         </button>
 
         <!-- Reset Button -->
-        <button onclick="location.reload()" class="text-xs bg-red-950/60 hover:bg-red-900 border border-red-800/60 text-red-300 font-bold px-3 py-1.5 rounded-lg transition">
-          Ricomincia
+        <button onclick="location.reload()" title="Ricomincia Partita" class="text-xs bg-red-950/60 hover:bg-red-900 border border-red-800/60 text-red-300 font-bold px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition">
+          <span class="sm:hidden">🔄</span>
+          <span class="hidden sm:inline">Ricomincia</span>
         </button>
       </div>
     </div>
   </header>
 
+  <!-- STICKY MOBILE RESOURCE MINI-BAR (Visible only on phone/small screens) -->
+  <div id="mobile-resource-bar" class="lg:hidden sticky top-[48px] sm:top-[56px] z-30 bg-slate-950/95 border-b border-slate-800 px-2 py-1.5 backdrop-blur-md flex items-center justify-around text-xs font-mono shadow-md">
+    <div class="flex items-center gap-1" title="MegaCrediti e produzione">
+      <span class="text-amber-400">💰</span>
+      <span id="mob-mc" class="font-bold text-amber-300">0</span>
+      <span id="mob-mc-prod" class="text-[10px] text-amber-500/80">(+0)</span>
+    </div>
+    <div class="flex items-center gap-1" title="Calore e produzione">
+      <span class="text-orange-400">🔥</span>
+      <span id="mob-heat" class="font-bold text-orange-300">0</span>
+      <span id="mob-heat-prod" class="text-[10px] text-orange-500/80">(+0)</span>
+    </div>
+    <div class="flex items-center gap-1" title="Piante e produzione">
+      <span class="text-emerald-400">🌿</span>
+      <span id="mob-plants" class="font-bold text-emerald-300">0</span>
+      <span id="mob-plants-prod" class="text-[10px] text-emerald-500/80">(+0)</span>
+    </div>
+    <div class="flex items-center gap-1" title="Rating di Terraformazione (TR)">
+      <span class="text-red-400">⭐</span>
+      <span id="mob-tr" class="font-bold text-red-300">20</span>
+      <span class="text-[10px] text-red-400/80">TR</span>
+    </div>
+    <div class="flex items-center gap-1" title="Carte in mano">
+      <span class="text-pink-400">🃏</span>
+      <span id="mob-hand" class="font-bold text-pink-300">0</span>
+    </div>
+  </div>
+
+  <!-- MOBILE SECTION SWITCHER TABS (Visible only on mobile/small screens) -->
+  <div id="mobile-nav-bar" class="lg:hidden flex items-center justify-around bg-slate-900/95 border-b border-slate-800 px-1 py-1 sticky top-[79px] sm:top-[87px] z-20 backdrop-blur-md text-xs font-mono">
+    <button data-mob-tab="cards" class="mob-tab-btn flex-1 py-1.5 px-1 rounded-lg text-center font-bold text-amber-400 bg-amber-500/20 border border-amber-500/40 transition">
+      🃏 Carte (<span id="mob-tab-count-cards">0</span>)
+    </button>
+    <button data-mob-tab="mars" class="mob-tab-btn flex-1 py-1.5 px-1 rounded-lg text-center font-bold text-slate-400 hover:text-white transition">
+      🪐 Marte & Bot
+    </button>
+    <button data-mob-tab="player" class="mob-tab-btn flex-1 py-1.5 px-1 rounded-lg text-center font-bold text-slate-400 hover:text-white transition">
+      🏢 Plancia
+    </button>
+    <button data-mob-tab="log" class="mob-tab-btn flex-1 py-1.5 px-1 rounded-lg text-center font-bold text-slate-400 hover:text-white transition">
+      📜 Log
+    </button>
+  </div>
+
   <!-- PHASE BANNER -->
-  <section class="max-w-7xl mx-auto w-full px-4 pt-4">
-    <div id="phase-banner" class="bg-slate-900/90 border border-amber-500/40 rounded-2xl p-4 shadow-xl backdrop-blur-md">
+  <section class="max-w-7xl mx-auto w-full px-2 sm:px-4 pt-2 sm:pt-4">
+    <div id="phase-banner" class="bg-slate-900/90 border border-amber-500/40 rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-xl backdrop-blur-md">
       <!-- Dynamic Phase Header injected here -->
     </div>
   </section>
 
   <!-- MAIN GAME DASHBOARD -->
-  <main class="max-w-7xl mx-auto w-full px-4 py-4 flex-1 flex flex-col gap-5">
+  <main class="max-w-7xl mx-auto w-full px-2 sm:px-4 py-3 sm:py-4 flex-1 flex flex-col gap-4 sm:gap-5">
     
     <!-- TOP SECTION: MARS & BOT -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+    <div id="mars-bot-section" class="mobile-section hidden lg:grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
       <!-- Mars Global Parameters (2 cols on large screen) -->
       <div id="mars-board-container" class="lg:col-span-2">
         <!-- Mars Board rendered dynamically -->
@@ -131,21 +181,21 @@
     </div>
 
     <!-- PLAYER DASHBOARD -->
-    <div id="player-dashboard-container">
+    <div id="player-dashboard-container" class="mobile-section hidden lg:block">
       <!-- Player Dashboard rendered dynamically -->
     </div>
 
     <!-- CARD MANAGEMENT & LOG SECTION -->
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-5 flex-1">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-5 flex-1">
       
-      <!-- Cards Tabs and Grid (3 cols) -->
-      <div class="lg:col-span-3 bg-slate-900/90 border border-slate-700/80 rounded-2xl p-5 shadow-2xl backdrop-blur-md flex flex-col">
+      <!-- Cards Tabs and Grid (3 cols on desktop) -->
+      <div id="cards-section" class="mobile-section block lg:col-span-3 bg-slate-900/90 border border-slate-700/80 rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-2xl backdrop-blur-md flex flex-col">
         <!-- Card Tabs -->
-        <div class="flex flex-wrap items-center justify-between border-b border-slate-800 pb-3 mb-4 gap-2">
-          <div class="flex items-center gap-2">
+        <div class="flex flex-wrap items-center justify-between border-b border-slate-800 pb-2.5 mb-3 sm:mb-4 gap-2">
+          <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
             <button 
               data-tab="hand" 
-              class="tab-btn font-bold text-xs px-3.5 py-2 rounded-xl border-b-2 border-amber-400 text-amber-400 bg-slate-950/60 transition flex items-center gap-2"
+              class="tab-btn font-bold text-xs px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl border-b-2 border-amber-400 text-amber-400 bg-slate-950/60 transition flex items-center gap-1.5"
             >
               <span>Mano</span>
               <span id="tab-count-hand" class="bg-amber-950 text-amber-300 font-mono text-[10px] px-2 py-0.5 rounded-full border border-amber-700/60">0</span>
@@ -153,50 +203,50 @@
 
             <button 
               data-tab="green" 
-              class="tab-btn font-bold text-xs px-3.5 py-2 rounded-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 bg-slate-950/60 transition flex items-center gap-2"
+              class="tab-btn font-bold text-xs px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 bg-slate-950/60 transition flex items-center gap-1.5"
             >
-              <span class="text-emerald-400">Verdi in Gioco</span>
+              <span class="text-emerald-400">Verdi</span>
               <span id="tab-count-green" class="bg-emerald-950 text-emerald-300 font-mono text-[10px] px-2 py-0.5 rounded-full border border-emerald-700/60">0</span>
             </button>
 
             <button 
               data-tab="blue" 
-              class="tab-btn font-bold text-xs px-3.5 py-2 rounded-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 bg-slate-950/60 transition flex items-center gap-2"
+              class="tab-btn font-bold text-xs px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 bg-slate-950/60 transition flex items-center gap-1.5"
             >
-              <span class="text-blue-400">Blu in Gioco</span>
+              <span class="text-blue-400">Blu</span>
               <span id="tab-count-blue" class="bg-blue-950 text-blue-300 font-mono text-[10px] px-2 py-0.5 rounded-full border border-blue-700/60">0</span>
             </button>
 
             <button 
               data-tab="red" 
-              class="tab-btn font-bold text-xs px-3.5 py-2 rounded-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 bg-slate-950/60 transition flex items-center gap-2"
+              class="tab-btn font-bold text-xs px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 bg-slate-950/60 transition flex items-center gap-1.5"
             >
-              <span class="text-red-400">Rosse Giocate</span>
+              <span class="text-red-400">Rosse</span>
               <span id="tab-count-red" class="bg-red-950 text-red-300 font-mono text-[10px] px-2 py-0.5 rounded-full border border-red-700/60">0</span>
             </button>
           </div>
 
-          <div class="text-[11px] text-slate-400 italic">
+          <div class="text-[10px] sm:text-[11px] text-slate-400 italic">
             Fai clic su "Gioca" o "Vendi" per interagire con le carte.
           </div>
         </div>
 
         <!-- Cards Display Grid -->
-        <div id="cards-container" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 flex-1 overflow-y-auto max-h-[600px] p-1">
+        <div id="cards-container" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 flex-1 overflow-y-auto max-h-[600px] p-0.5 sm:p-1">
           <!-- Cards rendered dynamically -->
         </div>
       </div>
 
-      <!-- Live Game Log (1 col) -->
-      <div class="bg-slate-900/90 border border-slate-700/80 rounded-2xl p-4 shadow-2xl backdrop-blur-md flex flex-col max-h-[680px]">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+      <!-- Live Game Log (1 col on desktop) -->
+      <div id="log-section" class="mobile-section hidden lg:flex bg-slate-900/90 border border-slate-700/80 rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-2xl backdrop-blur-md flex-col max-h-[680px]">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2.5 mb-2.5">
           <span class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
             <span>📜</span> Registro di Bordo
           </span>
           <span class="text-[10px] text-slate-500 font-mono">Live</span>
         </div>
 
-        <div id="game-log-list" class="flex-1 overflow-y-auto space-y-1 pr-1 font-mono">
+        <div id="game-log-list" class="flex-1 overflow-y-auto space-y-1 pr-1 font-mono text-xs">
           <!-- Logs rendered dynamically -->
         </div>
       </div>

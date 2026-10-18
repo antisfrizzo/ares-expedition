@@ -38,6 +38,7 @@ class AresApp {
     this.botAgent = null;
 
     this.currentTab = 'hand'; // 'hand', 'green', 'blue', 'red'
+    this.currentMobileView = 'cards'; // 'cards', 'mars', 'player', 'log'
     this.selectedPhaseCandidate = null;
     this.selectedResearchCards = new Set();
     this.corpChoices = [];
@@ -75,6 +76,14 @@ class AresApp {
       btn.addEventListener('click', (e) => {
         const tab = e.currentTarget.dataset.tab;
         this.switchTab(tab);
+      });
+    });
+
+    // Mobile Section Switcher
+    document.querySelectorAll('.mob-tab-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const view = e.currentTarget.dataset.mobTab;
+        this.switchMobileView(view);
       });
     });
 
@@ -284,6 +293,48 @@ class AresApp {
     this.renderCardsArea();
   }
 
+  switchMobileView(view) {
+    this.currentMobileView = view;
+    sounds.click();
+
+    document.querySelectorAll('.mob-tab-btn').forEach(btn => {
+      const isActive = btn.dataset.mobTab === view;
+      btn.classList.toggle('bg-amber-500/20', isActive);
+      btn.classList.toggle('text-amber-300', isActive);
+      btn.classList.toggle('border', isActive);
+      btn.classList.toggle('border-amber-500/40', isActive);
+      btn.classList.toggle('text-slate-400', !isActive);
+      btn.classList.toggle('border-transparent', !isActive);
+    });
+
+    const marsBot = document.getElementById('mars-bot-section');
+    const playerDash = document.getElementById('player-dashboard-container');
+    const cardsSec = document.getElementById('cards-section');
+    const logSec = document.getElementById('log-section');
+
+    if (view === 'cards') {
+      cardsSec?.classList.remove('hidden');
+      marsBot?.classList.add('hidden');
+      playerDash?.classList.add('hidden');
+      logSec?.classList.add('hidden');
+    } else if (view === 'mars') {
+      marsBot?.classList.remove('hidden');
+      cardsSec?.classList.add('hidden');
+      playerDash?.classList.add('hidden');
+      logSec?.classList.add('hidden');
+    } else if (view === 'player') {
+      playerDash?.classList.remove('hidden');
+      marsBot?.classList.add('hidden');
+      cardsSec?.classList.add('hidden');
+      logSec?.classList.add('hidden');
+    } else if (view === 'log') {
+      logSec?.classList.remove('hidden');
+      marsBot?.classList.add('hidden');
+      playerDash?.classList.add('hidden');
+      cardsSec?.classList.add('hidden');
+    }
+  }
+
   onPlayCard(cardId) {
     try {
       const card = this.engine.playCard(cardId, this.engine.players[0]);
@@ -384,6 +435,19 @@ class AresApp {
         confirmBtn.removeAttribute('disabled');
       });
     });
+
+    // Mobile Hand Preview Accordion Toggle
+    const toggleHandBtn = document.getElementById('toggle-modal-hand-btn');
+    const handContainer = document.getElementById('modal-hand-container');
+    if (toggleHandBtn && handContainer) {
+      toggleHandBtn.addEventListener('click', () => {
+        sounds.click();
+        handContainer.classList.toggle('hidden');
+        const isHidden = handContainer.classList.contains('hidden');
+        const arrow = document.getElementById('modal-hand-arrow');
+        if (arrow) arrow.textContent = isHidden ? 'Mostra ▾' : 'Nascondi ▴';
+      });
+    }
 
     confirmBtn?.addEventListener('click', () => {
       if (!this.selectedPhaseCandidate) return;
@@ -532,6 +596,27 @@ class AresApp {
     if (this.roundIndicatorEl) {
       this.roundIndicatorEl.textContent = `Round ${this.engine.round}`;
     }
+
+    // Update Mobile Resource Mini-Bar
+    const mobMC = document.getElementById('mob-mc');
+    const mobMCProd = document.getElementById('mob-mc-prod');
+    const mobHeat = document.getElementById('mob-heat');
+    const mobHeatProd = document.getElementById('mob-heat-prod');
+    const mobPlants = document.getElementById('mob-plants');
+    const mobPlantsProd = document.getElementById('mob-plants-prod');
+    const mobTR = document.getElementById('mob-tr');
+    const mobHand = document.getElementById('mob-hand');
+    const mobTabCards = document.getElementById('mob-tab-count-cards');
+
+    if (mobMC) mobMC.textContent = player.resources.mc;
+    if (mobMCProd) mobMCProd.textContent = `(+${player.production.mc})`;
+    if (mobHeat) mobHeat.textContent = player.resources.heat;
+    if (mobHeatProd) mobHeatProd.textContent = `(+${player.production.heat})`;
+    if (mobPlants) mobPlants.textContent = player.resources.plants;
+    if (mobPlantsProd) mobPlantsProd.textContent = `(+${player.production.plants})`;
+    if (mobTR) mobTR.textContent = player.tr;
+    if (mobHand) mobHand.textContent = player.hand.length;
+    if (mobTabCards) mobTabCards.textContent = player.hand.length;
 
     // Render Mars Board
     if (this.marsBoardEl) {
