@@ -292,66 +292,90 @@ export function renderPlayerDashboard(player, isCurrentActive = true, standardAc
   `;
 }
 
-export function renderBotDashboard(bot) {
+export function renderBotDashboard(bot, engine = null) {
   const corp = bot.corporation;
+  const botTags = engine?.getPlayerTags ? engine.getPlayerTags(bot) : {};
+  const activeTags = Object.values(TAGS).filter(t => (botTags[t.id] || 0) > 0);
 
   return `
-    <div class="bg-slate-900/80 border border-slate-700/60 rounded-2xl p-4 shadow-xl backdrop-blur-md">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-lg bg-red-600/30 border border-red-500/50 flex items-center justify-center text-lg">
+    <div class="bg-slate-900/80 border border-slate-700/60 rounded-2xl p-3.5 sm:p-4 shadow-xl backdrop-blur-md flex flex-col justify-between">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5 mb-2.5">
+        <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
+          <div class="w-8 h-8 rounded-lg bg-red-600/30 border border-red-500/50 flex items-center justify-center text-lg shrink-0">
             🤖
           </div>
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-sm text-slate-200">${bot.name}</span>
-              <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded border border-slate-700">${corp.name}</span>
+          <div class="min-w-0">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="font-bold text-xs sm:text-sm text-slate-200">${bot.name}</span>
+              <span class="text-[9px] sm:text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded border border-slate-700 font-mono truncate">${corp.name}</span>
             </div>
-            <div class="text-[11px] text-slate-400">
-              Ultima fase scelta: <span class="text-amber-400 font-semibold">${bot.lastSelectedPhase ? 'Fase ' + bot.lastSelectedPhase : 'Nessuna'}</span>
+            <div class="text-[10px] sm:text-[11px] text-slate-400">
+              Ultima fase: <span class="text-amber-400 font-semibold">${bot.lastSelectedPhase ? 'Fase ' + bot.lastSelectedPhase : 'Nessuna'}</span>
             </div>
           </div>
         </div>
 
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 sm:gap-3 shrink-0">
           <div class="text-right">
-            <span class="text-[10px] text-red-400 uppercase font-bold block">Rating TR</span>
-            <span class="text-xl font-black text-red-400 font-mono">${bot.tr}</span>
+            <span class="text-[9px] sm:text-[10px] text-red-400 uppercase font-bold block">Rating TR</span>
+            <span class="text-lg sm:text-xl font-black text-red-400 font-mono leading-tight">${bot.tr}</span>
           </div>
           <div class="text-right">
-            <span class="text-[10px] text-emerald-400 uppercase font-bold block">Foreste</span>
-            <span class="text-xl font-black text-emerald-400 font-mono">${bot.forestTokens}</span>
+            <span class="text-[9px] sm:text-[10px] text-emerald-400 uppercase font-bold block">Foreste</span>
+            <span class="text-lg sm:text-xl font-black text-emerald-400 font-mono leading-tight">${bot.forestTokens}</span>
           </div>
         </div>
       </div>
 
-      <div class="grid grid-cols-5 gap-2 text-center text-xs">
-        <div class="bg-slate-950/60 p-1.5 rounded-lg border border-slate-800">
-          <span class="text-[10px] text-amber-400 block font-bold">MC</span>
-          <span class="font-bold text-slate-200 font-mono">${bot.resources.mc}</span>
-          <span class="text-[9px] text-slate-500 block">+${bot.production.mc}</span>
+      <!-- Resource stats mini-grid -->
+      <div class="grid grid-cols-5 gap-1 text-center text-xs mb-2">
+        <div class="bg-slate-950/60 p-1 rounded-lg border border-slate-800">
+          <span class="text-[9px] text-amber-400 block font-bold">MC</span>
+          <span class="font-bold text-slate-200 font-mono text-xs sm:text-sm">${bot.resources.mc}</span>
+          <span class="text-[8px] text-slate-500 block font-mono">+${bot.production.mc}</span>
         </div>
-        <div class="bg-slate-950/60 p-1.5 rounded-lg border border-slate-800">
-          <span class="text-[10px] text-orange-400 block font-bold">Calore</span>
-          <span class="font-bold text-slate-200 font-mono">${bot.resources.heat}</span>
-          <span class="text-[9px] text-slate-500 block">+${bot.production.heat}</span>
+        <div class="bg-slate-950/60 p-1 rounded-lg border border-slate-800">
+          <span class="text-[9px] text-orange-400 block font-bold">Calore</span>
+          <span class="font-bold text-slate-200 font-mono text-xs sm:text-sm">${bot.resources.heat}</span>
+          <span class="text-[8px] text-slate-500 block font-mono">+${bot.production.heat}</span>
         </div>
-        <div class="bg-slate-950/60 p-1.5 rounded-lg border border-slate-800">
-          <span class="text-[10px] text-emerald-400 block font-bold">Piante</span>
-          <span class="font-bold text-slate-200 font-mono">${bot.resources.plants}</span>
-          <span class="text-[9px] text-slate-500 block">+${bot.production.plants}</span>
+        <div class="bg-slate-950/60 p-1 rounded-lg border border-slate-800">
+          <span class="text-[9px] text-emerald-400 block font-bold">Piante</span>
+          <span class="font-bold text-slate-200 font-mono text-xs sm:text-sm">${bot.resources.plants}</span>
+          <span class="text-[8px] text-slate-500 block font-mono">+${bot.production.plants}</span>
         </div>
-        <div class="bg-slate-950/60 p-1.5 rounded-lg border border-slate-800">
-          <span class="text-[10px] text-pink-400 block font-bold">Mano</span>
-          <span class="font-bold text-slate-200 font-mono">${bot.hand.length}</span>
-          <span class="text-[9px] text-slate-500 block">+${bot.production.cards}</span>
+        <div class="bg-slate-950/60 p-1 rounded-lg border border-slate-800">
+          <span class="text-[9px] text-pink-400 block font-bold">Mano</span>
+          <span class="font-bold text-slate-200 font-mono text-xs sm:text-sm">${bot.hand.length}</span>
+          <span class="text-[8px] text-slate-500 block font-mono">+${bot.production.cards}</span>
         </div>
-        <div class="bg-slate-950/60 p-1.5 rounded-lg border border-slate-800">
-          <span class="text-[10px] text-blue-400 block font-bold">Giocate</span>
-          <span class="font-bold text-slate-200 font-mono">${bot.playedCards.length}</span>
-          <span class="text-[9px] text-slate-500 block">carte</span>
+        <div class="bg-slate-950/60 p-1 rounded-lg border border-slate-800">
+          <span class="text-[9px] text-blue-400 block font-bold">Giocate</span>
+          <span class="font-bold text-slate-200 font-mono text-xs sm:text-sm">${bot.playedCards.length}</span>
+          <span class="text-[8px] text-slate-500 block">carte</span>
         </div>
       </div>
+
+      <!-- Quick Tag summary strip -->
+      ${activeTags.length > 0 ? `
+        <div class="flex items-center gap-1 flex-wrap mb-2">
+          ${activeTags.slice(0, 5).map(t => `
+            <span class="inline-flex items-center gap-0.5 bg-slate-950 border border-slate-800 px-1.5 py-0.5 rounded text-[9px] text-slate-300 font-mono" title="${t.name}: ${botTags[t.id]}">
+              <span>${t.icon}</span> <strong>${botTags[t.id]}</strong>
+            </span>
+          `).join('')}
+          ${activeTags.length > 5 ? `<span class="text-[9px] text-slate-500 font-mono">+${activeTags.length - 5}</span>` : ''}
+        </div>
+      ` : ''}
+
+      <!-- Inspect Opponent Action Button -->
+      <button 
+        data-action="inspect_bot"
+        class="w-full py-2 px-2.5 rounded-xl bg-gradient-to-r from-red-950/80 via-slate-800 to-red-900/60 hover:from-red-900 hover:to-slate-700 border border-red-500/40 text-red-200 hover:text-white font-bold text-[11px] sm:text-xs uppercase font-orbitron tracking-wider flex items-center justify-center gap-1.5 transition shadow-lg shadow-red-950/30 group"
+      >
+        <span class="group-hover:scale-110 transition-transform">👁️</span>
+        <span>Ispeziona Situazione e Carte (${bot.playedCards.length})</span>
+      </button>
     </div>
   `;
 }
@@ -470,7 +494,7 @@ export function renderCard(card, player, currentPhaseId, validationResult = null
         </div>
       ` : ''}
 
-      <!-- Actions in Play for Blue Cards -->
+      <!-- Actions in Play for Blue Cards (Player) -->
       ${location === 'played_blue' && card.action ? `
         <div class="p-2.5 bg-slate-950/90 border-t border-slate-800">
           <button 
@@ -482,6 +506,347 @@ export function renderCard(card, player, currentPhaseId, validationResult = null
           </button>
         </div>
       ` : ''}
+
+      <!-- Opponent Card Badges (when inspecting bot) -->
+      ${location === 'opponent_played' ? `
+        <div class="px-3 py-2 bg-slate-950/95 border-t border-slate-800 text-[10px] font-mono flex items-center justify-between">
+          ${card.type === 'blue' && card.action ? `
+            <span class="flex items-center gap-1 text-blue-300">
+              <span>⚡</span> Azione:
+              <strong class="${card.actionUsed ? 'text-slate-500' : 'text-emerald-400'}">${card.actionUsed ? '✓ Eseguita' : 'Disponibile'}</strong>
+            </span>
+          ` : card.type === 'green' ? `
+            <span class="text-emerald-400">🌿 Effetto Permanente Attivo</span>
+          ` : `
+            <span class="text-red-400">⚡ Evento Giocato</span>
+          `}
+          <span class="text-slate-500">Ares Bot</span>
+        </div>
+      ` : ''}
+
+    </div>
+  `;
+}
+
+export function renderOpponentInspectModal(bot, engine, activeFilter = 'all') {
+  const corp = bot.corporation;
+  const botTags = engine?.getPlayerTags ? engine.getPlayerTags(bot) : {};
+  
+  const allCards = bot.playedCards || [];
+  const greens = allCards.filter(c => c.type === 'green');
+  const blues = allCards.filter(c => c.type === 'blue');
+  const reds = allCards.filter(c => c.type === 'red');
+
+  let filteredCards = allCards;
+  if (activeFilter === 'green') filteredCards = greens;
+  else if (activeFilter === 'blue') filteredCards = blues;
+  else if (activeFilter === 'red') filteredCards = reds;
+
+  // Calculate estimated VP from cards
+  let cardVPTotal = 0;
+  for (const c of allCards) {
+    if (typeof c.vp === 'number') cardVPTotal += c.vp;
+  }
+  const totalEstVP = bot.tr + bot.forestTokens + cardVPTotal;
+
+  return `
+    <div class="bg-slate-900 border-2 border-red-500/60 rounded-2xl sm:rounded-3xl max-w-5xl w-full p-3 sm:p-6 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+      <!-- Header -->
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+        <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+          <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-red-600/30 border border-red-500/50 flex items-center justify-center text-xl shrink-0">
+            🤖
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h3 class="text-sm sm:text-lg font-black text-white uppercase font-orbitron truncate">${bot.name}</h3>
+              <span class="bg-red-950/80 text-red-300 text-xs px-2.5 py-0.5 rounded-full border border-red-600/50 font-mono font-bold">
+                ${corp.name}
+              </span>
+            </div>
+            <p class="text-[11px] sm:text-xs text-slate-400 truncate">Plancia, risorse, produzione e carte giocate dall'avversario</p>
+          </div>
+        </div>
+
+        <button 
+          data-action="close_inspect_modal"
+          class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center font-bold text-base sm:text-lg transition shrink-0"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Scrollable Content -->
+      <div class="overflow-y-auto space-y-3.5 pr-1 sm:pr-2 flex-1">
+        
+        <!-- Corporation & VP Summary Card -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <!-- Corp Ability -->
+          <div class="md:col-span-2 bg-slate-950/80 border border-slate-800 rounded-xl p-3 sm:p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 mb-1 flex-wrap">
+                <span class="text-xs font-bold text-amber-400 uppercase font-mono tracking-wider">Corporazione:</span>
+                <span class="text-xs font-bold text-white">${corp.name}</span>
+                <span class="text-[11px] text-amber-300 font-medium">(${corp.subtitle})</span>
+              </div>
+              <p class="text-[11px] sm:text-xs text-slate-300 leading-relaxed">${corp.description}</p>
+            </div>
+            <div class="mt-2 pt-2 border-t border-slate-800/80 flex items-center gap-3 text-[11px] text-slate-400 font-mono">
+              <span>Mano attuale: <strong class="text-pink-300">${bot.hand.length} carte</strong></span>
+              <span>•</span>
+              <span>Ultima fase: <strong class="text-amber-400">${bot.lastSelectedPhase ? 'Fase ' + bot.lastSelectedPhase : 'Nessuna'}</strong></span>
+            </div>
+          </div>
+
+          <!-- VP & TR Breakdown -->
+          <div class="bg-gradient-to-b from-red-950/40 to-slate-950/80 border border-red-900/60 rounded-xl p-3 sm:p-4 flex flex-col justify-between">
+            <span class="text-xs font-bold text-red-400 uppercase font-mono tracking-wider">Punti Vittoria Stimati</span>
+            <div class="flex items-baseline gap-2 my-1">
+              <span class="text-2xl sm:text-3xl font-black text-white font-mono">${totalEstVP}</span>
+              <span class="text-xs text-slate-400">PV Totali</span>
+            </div>
+            <div class="grid grid-cols-3 gap-1 text-center text-[10px] font-mono pt-2 border-t border-slate-800">
+              <div>
+                <span class="text-red-400 block font-bold">${bot.tr}</span>
+                <span class="text-slate-500">TR</span>
+              </div>
+              <div>
+                <span class="text-emerald-400 block font-bold">${bot.forestTokens}</span>
+                <span class="text-slate-500">Foreste</span>
+              </div>
+              <div>
+                <span class="text-amber-400 block font-bold">${cardVPTotal}</span>
+                <span class="text-slate-500">Carte PV</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resources & Production Grid -->
+        <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3 sm:p-4">
+          <span class="text-xs font-bold text-slate-300 uppercase font-mono tracking-wider block mb-2">Risorse e Produzione</span>
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-center text-xs">
+            <div class="bg-slate-900/80 p-2 rounded-lg border border-amber-900/40">
+              <span class="text-[10px] text-amber-400 block font-bold">💰 MC</span>
+              <span class="font-black text-base text-amber-300 font-mono">${bot.resources.mc}</span>
+              <span class="text-[10px] text-amber-500/80 block">+${bot.production.mc} / turno</span>
+            </div>
+            <div class="bg-slate-900/80 p-2 rounded-lg border border-orange-900/40">
+              <span class="text-[10px] text-orange-400 block font-bold">🔥 Calore</span>
+              <span class="font-black text-base text-orange-400 font-mono">${bot.resources.heat}</span>
+              <span class="text-[10px] text-orange-500/80 block">+${bot.production.heat} / turno</span>
+            </div>
+            <div class="bg-slate-900/80 p-2 rounded-lg border border-emerald-900/40">
+              <span class="text-[10px] text-emerald-400 block font-bold">🌿 Piante</span>
+              <span class="font-black text-base text-emerald-400 font-mono">${bot.resources.plants}</span>
+              <span class="text-[10px] text-emerald-500/80 block">+${bot.production.plants} / turno</span>
+            </div>
+            <div class="bg-slate-900/80 p-2 rounded-lg border border-pink-900/40">
+              <span class="text-[10px] text-pink-400 block font-bold">🃏 Carte Prod</span>
+              <span class="font-black text-base text-pink-400 font-mono">${bot.hand.length}</span>
+              <span class="text-[10px] text-pink-500/80 block">+${bot.production.cards} / turno</span>
+            </div>
+            <div class="bg-slate-900/80 p-2 rounded-lg border border-amber-950/60">
+              <span class="text-[10px] text-amber-500 block font-bold">🏗️ Acciaio</span>
+              <span class="font-black text-base text-amber-400 font-mono">${bot.resources.steel || 0}</span>
+              <span class="text-[10px] text-slate-500 block">Sconto Edifici</span>
+            </div>
+            <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-700/60">
+              <span class="text-[10px] text-slate-300 block font-bold">🚀 Titanio</span>
+              <span class="font-black text-base text-slate-200 font-mono">${bot.resources.titanium || 0}</span>
+              <span class="text-[10px] text-slate-500 block">Sconto Spazio</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tags Collected -->
+        <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3 sm:p-4">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-slate-300 uppercase font-mono tracking-wider">Tag e Simboli Raccolti</span>
+            <span class="text-[11px] text-slate-400 font-mono">Totale carte: ${allCards.length}</span>
+          </div>
+          <div class="flex items-center gap-1.5 flex-wrap">
+            ${Object.values(TAGS).map(t => {
+              const count = botTags[t.id] || 0;
+              return `
+                <div class="flex items-center gap-1 px-2 py-1 rounded-lg border text-xs font-mono transition ${
+                  count > 0 
+                    ? 'bg-slate-900 border-slate-700 text-white shadow-sm' 
+                    : 'bg-slate-950/50 border-slate-800/60 text-slate-600 opacity-60'
+                }">
+                  <span class="w-5 h-5 rounded flex items-center justify-center text-[10px] ${t.color} text-white font-bold">${t.icon}</span>
+                  <span class="text-[11px]">${t.name}:</span>
+                  <strong class="font-bold ${count > 0 ? 'text-amber-400' : 'text-slate-600'}">${count}</strong>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+
+        <!-- Cards Category Filter Tabs -->
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2 flex-wrap gap-2 pt-2">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-xs font-bold text-slate-300 font-mono uppercase">Carte Giocate:</span>
+            <div class="flex items-center gap-1 flex-wrap">
+              <button 
+                data-bot-filter="all"
+                class="bot-filter-btn px-2.5 py-1 rounded-lg text-xs font-bold border transition ${activeFilter === 'all' ? 'bg-amber-500 text-slate-950 border-amber-400 shadow' : 'bg-slate-800 text-slate-300 border-slate-700'}"
+              >
+                Tutte (${allCards.length})
+              </button>
+              <button 
+                data-bot-filter="green"
+                class="bot-filter-btn px-2.5 py-1 rounded-lg text-xs font-bold border transition ${activeFilter === 'green' ? 'bg-emerald-600 text-white border-emerald-400 shadow' : 'bg-slate-800 text-emerald-400 border-slate-700'}"
+              >
+                Verdi (${greens.length})
+              </button>
+              <button 
+                data-bot-filter="blue"
+                class="bot-filter-btn px-2.5 py-1 rounded-lg text-xs font-bold border transition ${activeFilter === 'blue' ? 'bg-blue-600 text-white border-blue-400 shadow' : 'bg-slate-800 text-blue-400 border-slate-700'}"
+              >
+                Blu (${blues.length})
+              </button>
+              <button 
+                data-bot-filter="red"
+                class="bot-filter-btn px-2.5 py-1 rounded-lg text-xs font-bold border transition ${activeFilter === 'red' ? 'bg-red-600 text-white border-red-400 shadow' : 'bg-slate-800 text-red-400 border-slate-700'}"
+              >
+                Rosse (${reds.length})
+              </button>
+            </div>
+          </div>
+
+          <span class="text-[11px] text-slate-400 font-mono">Mostrando ${filteredCards.length} ${filteredCards.length === 1 ? 'carta' : 'carte'}</span>
+        </div>
+
+        <!-- Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 min-h-[160px]">
+          ${filteredCards.length === 0 ? `
+            <div class="col-span-full py-10 text-center text-slate-500 text-xs border border-dashed border-slate-800 rounded-xl">
+              Nessuna carta presente in questa categoria per Ares Bot.
+            </div>
+          ` : filteredCards.map(c => renderCard(c, bot, engine?.phaseResolution?.phaseId, null, 'opponent_played')).join('')}
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="border-t border-slate-800 pt-3 mt-3 flex justify-end">
+        <button 
+          data-action="close_inspect_modal"
+          class="px-6 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs uppercase font-mono transition"
+        >
+          Chiudi
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+export function renderProductionModal(productionReports, round = 1) {
+  const pRep = productionReports?.player || { totalMC: 0, tr: 0, mcProd: 0, heat: 0, plants: 0, cardsCount: 0 };
+  const bRep = productionReports?.bot || { totalMC: 0, tr: 0, mcProd: 0, heat: 0, plants: 0, cardsCount: 0 };
+
+  return `
+    <div class="bg-slate-900 border-2 border-purple-500/80 rounded-2xl sm:rounded-3xl max-w-2xl w-full p-4 sm:p-6 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+      
+      <!-- Header -->
+      <div class="text-center border-b border-purple-900/60 pb-3 mb-3 sm:mb-4">
+        <div class="w-11 h-11 sm:w-12 sm:h-12 mx-auto rounded-2xl bg-purple-600/30 border border-purple-400/50 flex items-center justify-center text-xl sm:text-2xl shadow-lg shadow-purple-900/40 mb-2">
+          🏭
+        </div>
+        <span class="text-[10px] sm:text-[11px] font-mono uppercase tracking-widest text-purple-400 font-bold">Fase IV Risolta • Round ${round}</span>
+        <h3 class="text-lg sm:text-2xl font-black text-white uppercase font-orbitron tracking-wider">Rapporto di Produzione</h3>
+        <p class="text-[11px] sm:text-xs text-slate-300 mt-1 max-w-md mx-auto">
+          Tutte le risorse del tuo impero marziano sono state calcolate e accreditate alla tua plancia.
+        </p>
+      </div>
+
+      <!-- Player Production Breakdown -->
+      <div class="bg-gradient-to-b from-purple-950/40 via-slate-950/80 to-slate-950/90 border border-purple-500/40 rounded-2xl p-3 sm:p-5 mb-3 sm:mb-4 shadow-xl">
+        <div class="flex items-center justify-between border-b border-purple-900/60 pb-2 mb-2.5">
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <span class="text-base sm:text-lg">🧑‍🚀</span>
+            <h4 class="font-black text-xs sm:text-sm text-white uppercase font-orbitron tracking-wider">Le Tue Risorse Accreditate</h4>
+          </div>
+          ${pRep.isChooser ? `
+            <span class="bg-amber-400/20 text-amber-300 border border-amber-400/50 text-[10px] px-2 py-0.5 rounded-full font-bold">
+              Bonus di Guida (+4 MC) Incluso!
+            </span>
+          ` : `
+            <span class="bg-slate-800 text-slate-400 text-[10px] px-2 py-0.5 rounded-full">
+              Produzione Base
+            </span>
+          `}
+        </div>
+
+        <!-- Big MC Income Display -->
+        <div class="bg-slate-950/90 border border-amber-500/40 rounded-xl p-2.5 sm:p-3 mb-2.5 sm:mb-3 text-center">
+          <span class="text-[10px] uppercase font-bold text-amber-400 tracking-widest block font-mono">MegaCrediti Incassati</span>
+          <div class="text-3xl sm:text-4xl font-black text-amber-300 font-mono my-0.5">
+            +${pRep.totalMC} MC
+          </div>
+          <div class="text-[11px] text-amber-400/90 font-mono">
+            (${pRep.tr} TR + ${pRep.mcProd} Prod MC ${pRep.isChooser ? '+ 4 MC Bonus Guida' : ''})
+          </div>
+        </div>
+
+        <!-- Heat, Plants, Cards Grid -->
+        <div class="grid grid-cols-3 gap-2 sm:gap-2.5 text-center">
+          <div class="bg-slate-950/90 border border-orange-900/60 rounded-xl p-2 sm:p-2.5">
+            <span class="text-[9px] sm:text-[10px] uppercase font-bold text-orange-400 block font-mono">🔥 Calore</span>
+            <span class="text-xl sm:text-2xl font-black text-orange-400 font-mono my-0.5 block">+${pRep.heat}</span>
+            <span class="text-[9px] sm:text-[10px] text-slate-400">Energia termica</span>
+          </div>
+
+          <div class="bg-slate-950/90 border border-emerald-900/60 rounded-xl p-2 sm:p-2.5">
+            <span class="text-[9px] sm:text-[10px] uppercase font-bold text-emerald-400 block font-mono">🌿 Piante</span>
+            <span class="text-xl sm:text-2xl font-black text-emerald-400 font-mono my-0.5 block">+${pRep.plants}</span>
+            <span class="text-[9px] sm:text-[10px] text-slate-400">Verdeggiante</span>
+          </div>
+
+          <div class="bg-slate-950/90 border border-pink-900/60 rounded-xl p-2 sm:p-2.5">
+            <span class="text-[9px] sm:text-[10px] uppercase font-bold text-pink-400 block font-mono">🃏 Carte</span>
+            <span class="text-xl sm:text-2xl font-black text-pink-300 font-mono my-0.5 block">+${pRep.cardsCount}</span>
+            <span class="text-[9px] sm:text-[10px] text-slate-400">Pescate in mano</span>
+          </div>
+        </div>
+
+        ${pRep.drawnCards && pRep.drawnCards.length > 0 ? `
+          <div class="mt-2.5 pt-2 border-t border-purple-900/60 text-xs text-purple-200">
+            <span class="font-bold text-[10px] sm:text-[11px] text-pink-400 block mb-1">Carte pescate dalla produzione:</span>
+            <div class="flex items-center gap-1.5 flex-wrap">
+              ${pRep.drawnCards.map(c => `
+                <span class="inline-flex items-center gap-1 bg-slate-900 border border-pink-700/60 text-pink-300 text-[10px] sm:text-[11px] px-2 py-0.5 rounded font-medium">
+                  <span>🃏</span> ${c.nameIt || c.name}
+                </span>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
+      </div>
+
+      <!-- Bot Summary Card -->
+      <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-2.5 sm:p-3 mb-3 sm:mb-4 text-xs">
+        <div class="flex items-center justify-between text-slate-300 font-mono">
+          <span class="flex items-center gap-1.5 font-bold">
+            <span>🤖</span> Produzione di Ares Bot:
+          </span>
+          <span class="text-amber-400 font-bold">+${bRep.totalMC} MC</span>
+        </div>
+        <div class="text-[10px] sm:text-[11px] text-slate-400 mt-1 flex items-center justify-between flex-wrap gap-2">
+          <span>Dettagli: +${bRep.heat} Calore, +${bRep.plants} Piante, +${bRep.cardsCount} Carte</span>
+          <span class="text-slate-500 font-mono">(${bRep.tr} TR + ${bRep.mcProd} Prod ${bRep.isChooser ? '+4 Bonus' : ''})</span>
+        </div>
+      </div>
+
+      <!-- Continue Action Button -->
+      <button 
+        data-action="acknowledge_production"
+        class="w-full py-3 sm:py-3.5 px-4 sm:px-6 rounded-xl bg-gradient-to-r from-purple-600 via-amber-500 to-orange-500 hover:from-purple-500 hover:to-orange-400 text-slate-950 font-black text-xs sm:text-sm uppercase font-orbitron tracking-wider transition shadow-xl shadow-amber-500/20 flex items-center justify-center gap-2"
+      >
+        <span>✅</span>
+        <span>Ho Raccolto le Risorse - Concludi Fase IV ➔</span>
+      </button>
 
     </div>
   `;

@@ -606,7 +606,8 @@ export class GameEngine {
       cardPlaysRemaining: {},
       actionsUsed: {},
       researchOffered: {},
-      bonusClaimed: {}
+      bonusClaimed: {},
+      productionReports: {}
     };
 
     const phaseConfig = Object.values(PHASES).find(p => p.id === phaseId);
@@ -623,8 +624,7 @@ export class GameEngine {
         this.phaseResolution.cardPlaysRemaining[p.id] = isChooser ? 2 : 1;
         // In Ares Expedition, Construction bonus gives EITHER 1 extra play OR draw 1 card.
       } else if (phaseId === 4) { // Production
-        // Instant resolution of production
-        this.resolveProduction(p, isChooser);
+        this.phaseResolution.productionReports[p.id] = this.resolveProduction(p, isChooser);
       } else if (phaseId === 5) { // Research
         const drawCount = isChooser ? 5 : 2;
         const keepCount = isChooser ? 2 : 1;
@@ -638,8 +638,9 @@ export class GameEngine {
     }
 
     if (phaseId === 4) {
-      // Production resolves instantly for both
-      this.nextPhase();
+      // Production is distributed. Bot completes turn, player reviews report and acknowledges
+      this.phaseResolution.botDone = true;
+      this.phaseResolution.playerDone = false;
     }
   }
 
@@ -678,9 +679,27 @@ export class GameEngine {
     player.resources.mc += mcEarned;
     player.resources.heat += heatEarned;
     player.resources.plants += plantsEarned;
-    if (cardsDrawn > 0) this.drawCards(player, cardsDrawn);
+    const drawn = [];
+    if (cardsDrawn > 0) {
+      drawn.push(...this.drawCards(player, cardsDrawn));
+    }
+
+    const report = {
+      playerId: player.id,
+      playerName: player.name,
+      isChooser,
+      tr: player.tr,
+      mcProd: player.production.mc,
+      mcBonus: isChooser ? 4 : 0,
+      totalMC: mcEarned,
+      heat: heatEarned,
+      plants: plantsEarned,
+      cardsCount: cardsDrawn,
+      drawnCards: drawn
+    };
 
     this.log(`${player.name} produce: +${mcEarned} MC (${player.tr} TR + ${player.production.mc} Prod ${isChooser ? '+4 Bonus' : ''}), +${heatEarned} Calore, +${plantsEarned} Piante, +${cardsDrawn} Carte.`);
+    return report;
   }
 
   completeResearch(player, keptCardIds) {

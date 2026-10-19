@@ -202,4 +202,65 @@ describe('Terraforming Mars: Ares Expedition Engine Tests', () => {
     const scorePhase5 = botAgent.evaluatePhase(5);
     assert.ok(scorePhase5 > 35, 'Phase 5 should score high when hand is depleted');
   });
+
+  test('Phase IV Production resolves income breakdown accurately including chooser lead bonus', () => {
+    const player = engine.players[0];
+    const bot = engine.players[1];
+
+    player.tr = 22;
+    player.production.mc = 5;
+    player.production.heat = 3;
+    player.production.plants = 4;
+    player.production.cards = 1;
+    player.resources.mc = 10;
+    player.resources.heat = 2;
+    player.resources.plants = 1;
+
+    // Both choose Phase IV (or bot chooses 4 so phase 4 is active immediately)
+    engine.setPhaseChoice(player.id, 4);
+    engine.setPhaseChoice(bot.id, 4);
+
+    engine.startResolution();
+    assert.strictEqual(engine.phaseResolution.phaseId, 4);
+
+    const report = engine.phaseResolution.productionReports[player.id];
+    assert.ok(report, 'Production report must exist for player');
+    assert.strictEqual(report.isChooser, true);
+    assert.strictEqual(report.tr, 22);
+    assert.strictEqual(report.mcProd, 5);
+    assert.strictEqual(report.mcBonus, 4);
+    // Total MC = 22 TR + 5 Prod + 4 Bonus = 31 MC
+    assert.strictEqual(report.totalMC, 31);
+    assert.strictEqual(player.resources.mc, 10 + 31);
+    assert.strictEqual(player.resources.heat, 2 + 3);
+    assert.strictEqual(player.resources.plants, 1 + 4);
+    assert.strictEqual(report.cardsCount, 1);
+    assert.ok(report.drawnCards.length > 0);
+
+    // Player acknowledges production and passes
+    assert.strictEqual(engine.phaseResolution.playerDone, false);
+    assert.strictEqual(engine.phaseResolution.botDone, true);
+    engine.playerPassPhase();
+    assert.strictEqual(engine.phaseResolution.playerDone, true);
+  });
+
+  test('Opponent situation inspection correctly aggregates played cards, tags, and corporation details', () => {
+    const bot = engine.players[1];
+    assert.ok(bot.corporation, 'Bot must have a corporation assigned');
+    assert.ok(bot.corporation.name);
+
+    // Fake some played cards on bot with tags
+    bot.playedCards = [
+      { id: 'c1', name: 'Green Space', type: 'green', cost: 12, tags: ['space', 'building'] },
+      { id: 'c2', name: 'Blue Science', type: 'blue', cost: 18, tags: ['science', 'space'], action: { type: 'draw' } },
+      { id: 'c3', name: 'Red Event', type: 'red', cost: 8, tags: ['event'], vp: 2 }
+    ];
+
+    const tags = engine.getPlayerTags(bot);
+    assert.ok(tags['space'] >= 2, 'Bot must have at least 2 space tags');
+    assert.ok(tags['building'] >= 1, 'Bot must have at least 1 building tag');
+    assert.ok(tags['science'] >= 1, 'Bot must have at least 1 science tag');
+    assert.ok(tags['event'] >= 1, 'Bot must have at least 1 event tag');
+    assert.strictEqual(bot.playedCards.length, 3);
+  });
 });

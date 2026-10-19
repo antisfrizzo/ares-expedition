@@ -6,7 +6,7 @@
 
 import { GameEngine } from './engine/rules.js';
 import { AresBot } from './engine/ai.js';
-import { PHASES, GLOBAL_PARAMS, STANDARD_ACTIONS } from './engine/types.js';
+import { PHASES, GLOBAL_PARAMS, STANDARD_ACTIONS, TAGS } from './engine/types.js';
 import { 
   renderMarsBoard, 
   renderPlayerDashboard, 
@@ -14,7 +14,9 @@ import {
   renderCard, 
   renderPhaseSelectionModal, 
   renderResearchModal, 
-  renderGameOverModal 
+  renderGameOverModal,
+  renderOpponentInspectModal,
+  renderProductionModal
 } from './ui/components.js';
 import { 
   renderMainMenu, 
@@ -37,11 +39,15 @@ class AresApp {
     this.engine = new GameEngine({ autoInit: false });
     this.botAgent = null;
 
-    this.currentTab = 'hand'; // 'hand', 'green', 'blue', 'red'
+    this.currentTab = 'hand'; // 'hand', 'green', 'blue', 'red', 'opponent'
     this.currentMobileView = 'cards'; // 'cards', 'mars', 'player', 'log'
     this.selectedPhaseCandidate = null;
     this.selectedResearchCards = new Set();
     this.corpChoices = [];
+    this.botInspectFilter = 'all';
+    this.isInspectModalOpen = false;
+    this.lastTrackedPhaseId = null;
+    this.lastTrackedRound = null;
 
     this.initDOM();
     this.bindEvents();
@@ -171,10 +177,96 @@ class AresApp {
         this.openResearchModal();
       } else if (action === 'claim_phase2_draw') {
         this.onClaimPhase2Draw();
+      } else if (action === 'inspect_bot') {
+        this.openOpponentInspectModal();
+      } else if (action === 'close_inspect_modal') {
+        sounds.click();
+        this.isInspectModalOpen = false;
+        this.modalOverlayEl.classList.add('hidden');
+      } else if (action === 'reopen_production_modal') {
+        this.openProductionModal();
+      } else if (action === 'acknowledge_production') {
+        this.onAcknowledgeProduction();
       } else if (action === 'pass_phase') {
         this.onPlayerPassPhase();
       }
     });
+  }
+
+  showToast(title, message, type = 'info', duration = 3500) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `pointer-events-auto transform transition-all duration-300 ease-out translate-y-2 opacity-0 p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border shadow-2xl backdrop-blur-md flex items-start gap-2.5 sm:gap-3 cursor-pointer select-none max-w-sm w-full ${
+      type === 'success' 
+        ? 'bg-slate-950/95 border-emerald-500/60 shadow-emerald-950/40' 
+        : type === 'phase' 
+          ? 'bg-slate-950/95 border-amber-500/60 shadow-amber-950/40' 
+          : type === 'production' 
+            ? 'bg-slate-950/95 border-purple-500/60 shadow-purple-950/40' 
+            : 'bg-slate-950/95 border-cyan-500/60 shadow-cyan-950/40'
+    }`;
+
+    const icon = type === 'success' ? '✅' : type === 'phase' ? '🎯' : type === 'production' ? '🏭' : 'ℹ️';
+    const titleColor = type === 'success' ? 'text-emerald-300' : type === 'phase' ? 'text-amber-300' : type === 'production' ? 'text-purple-300' : 'text-cyan-300';
+
+    toast.innerHTML = `
+      <div class="text-lg sm:text-xl shrink-0 mt-0.5">${icon}</div>
+      <div class="flex-1 min-w-0">
+        <h5 class="text-xs font-black uppercase font-orbitron tracking-wider ${titleColor} truncate">${title}</h5>
+        <p class="text-[11px] text-slate-300 leading-snug mt-0.5">${message}</p>
+      </div>
+      <button class="text-slate-500 hover:text-white text-xs font-bold leading-none shrink-0 p-1">✕</button>
+    `;
+
+    container.appendChild(toast);
+
+    requestAnimationFrame(() => {
+      toast.classList.remove('translate-y-2', 'opacity-0');
+    });
+
+    const removeToast = () => {
+      toast.classList.add('opacity-0', 'scale-95');
+      setTimeout(() => toast.remove(), 250);
+    };
+
+    toast.addEventListener('click', removeToast);
+    setTimeout(removeToast, duration);
+  }
+
+  openOpponentInspectModal(filter = null) {
+    if (filter) this.botInspectFilter = filter;
+    sounds.click();
+    this.modalOverlayEl.innerHTML = renderOpponentInspectModal(
+      this.engine.players[1],
+      this.engine,
+      this.botInspectFilter
+    );
+    this.modalOverlayEl.classList.remove('hidden');
+    this.isInspectModalOpen = true;
+
+    // Bind filter buttons inside modal
+    this.modalOverlayEl.querySelectorAll('[data-bot-filter]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const f = e.currentTarget.dataset.botFilter;
+        this.openOpponentInspectModal(f);
+      });
+    });
+  }
+
+  openProductionModal() {
+    const reports = this.engine.phaseResolution?.productionReports;
+    if (!reports) return;
+    sounds.production();
+    this.modalOverlayEl.innerHTML = renderProductionModal(reports, this.engine.round);
+    this.modalOverlayEl.classList.remove('hidden');
+  }
+
+  onAcknowledgeProduction() {
+    sounds.click();
+    this.modalOverlayEl.classList.add('hidden');
+    this.onPlayerPassPhase();
   }
 
   onClaimPhase2Draw() {
@@ -604,6 +696,38 @@ class AresApp {
     const player = this.engine.players[0];
     const bot = this.engine.players[1];
 
+    // Detect phase changes and round advances for notifications
+    const currentPhaseId = this.engine.step === 'resolution' ? this.engine.phaseResolution?.phaseId : null;
+    const currentRound = this.engine.round;
+
+    if (this.lastTrackedRound !== null && currentRound !== this.lastTrackedRound) {
+      this.showToast(`Inizio Round ${currentRound}`, `Benvenuto al Round ${currentRound}. Scegli la tua carta fase!`, 'phase');
+      this.lastTrackedPhaseId = null;
+    }
+    this.lastTrackedRound = currentRound;
+
+    if (this.lastTrackedPhaseId !== currentPhaseId) {
+      if (this.lastTrackedPhaseId !== null && this.lastTrackedPhaseId !== undefined) {
+        const prevCfg = Object.values(PHASES).find(p => p.id === this.lastTrackedPhaseId);
+        this.showToast(
+          'Fase Completata!',
+          `La Fase ${this.lastTrackedPhaseId} (${prevCfg?.nameIt || ''}) è stata completata con successo.`,
+          'success'
+        );
+      }
+
+      if (currentPhaseId !== null && currentPhaseId !== undefined) {
+        const nextCfg = Object.values(PHASES).find(p => p.id === currentPhaseId);
+        const isChooser = this.engine.players[0].selectedPhase === currentPhaseId;
+        this.showToast(
+          `Inizio Fase ${currentPhaseId}`,
+          `${nextCfg?.nameIt} (${nextCfg?.name}). ${isChooser ? 'Tuo Bonus di Guida attivo!' : 'Azione base per tutti.'}`,
+          'phase'
+        );
+      }
+      this.lastTrackedPhaseId = currentPhaseId;
+    }
+
     // Update Round Indicator
     if (this.roundIndicatorEl) {
       this.roundIndicatorEl.textContent = `Round ${this.engine.round}`;
@@ -641,9 +765,9 @@ class AresApp {
       this.playerDashboardEl.innerHTML = renderPlayerDashboard(player, true, standardActionsEnabled);
     }
 
-    // Render Bot Dashboard
+    // Render Bot Dashboard (with engine for tags & inspection)
     if (this.botDashboardEl) {
-      this.botDashboardEl.innerHTML = renderBotDashboard(bot);
+      this.botDashboardEl.innerHTML = renderBotDashboard(bot, this.engine);
     }
 
     // Render Phase Banner
@@ -699,20 +823,28 @@ class AresApp {
       const isChooser = player.selectedPhase === phaseId;
       const playsLeft = this.engine.phaseResolution.cardPlaysRemaining[player.id] || 0;
       const researchOffer = this.engine.phaseResolution?.researchOffered?.['player'];
+      const pRep = this.engine.phaseResolution?.productionReports?.['player'];
 
-      // Active phases timeline
+      // Active phases timeline with completed status
       const phaseTimelineHTML = this.engine.activePhases.map(pid => {
         const cfg = Object.values(PHASES).find(p => p.id === pid);
+        const currentIndex = this.engine.currentPhaseIndex;
+        const thisIndex = this.engine.activePhases.indexOf(pid);
+        const isPast = thisIndex < currentIndex;
         const isCurrent = pid === phaseId;
+
         return `
           <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold font-mono border transition ${
             isCurrent 
               ? 'bg-amber-400 text-slate-950 border-amber-300 shadow-md shadow-amber-400/30' 
-              : 'bg-slate-950/70 text-slate-400 border-slate-800'
+              : isPast
+                ? 'bg-emerald-950/60 text-emerald-300 border-emerald-600/50'
+                : 'bg-slate-950/70 text-slate-400 border-slate-800'
           }">
             <span>${pid}</span>
             <span>${cfg.nameIt}</span>
-            ${isCurrent ? '<span class="text-[10px] bg-slate-900 text-amber-300 px-1 rounded uppercase">Attiva</span>' : ''}
+            ${isCurrent ? '<span class="text-[10px] bg-slate-900 text-amber-300 px-1 rounded uppercase font-bold animate-pulse">In Corso</span>' : ''}
+            ${isPast ? '<span class="text-[10px] text-emerald-400 font-bold">✓ Fatta</span>' : ''}
           </span>
         `;
       }).join('<span class="text-slate-600 font-bold">➔</span>');
@@ -778,6 +910,16 @@ class AresApp {
                 </button>
               ` : ''}
 
+              ${phaseId === 4 && pRep ? `
+                <button 
+                  data-action="reopen_production_modal"
+                  class="px-4 py-2 rounded-xl bg-purple-900/70 hover:bg-purple-800 text-purple-200 border border-purple-500/50 font-black text-xs uppercase font-orbitron tracking-wider transition shadow-lg flex items-center gap-1.5"
+                >
+                  <span>🏭</span>
+                  <span>Riepilogo Risorse (+${pRep.totalMC} MC)</span>
+                </button>
+              ` : ''}
+
               ${phaseId === 5 && researchOffer ? `
                 <button 
                   data-action="open_research_modal"
@@ -789,13 +931,33 @@ class AresApp {
               ` : ''}
 
               <button 
-                data-action="pass_phase"
+                data-action="${phaseId === 4 ? 'acknowledge_production' : 'pass_phase'}"
                 class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase font-orbitron tracking-wider transition shadow-lg shadow-amber-500/20"
               >
-                ${phaseId === 5 && researchOffer ? 'Completa Ricerca' : 'Passa / Concludi Fase'}
+                ${phaseId === 4 ? 'Concludi Produzione ➔' : phaseId === 5 && researchOffer ? 'Completa Ricerca' : 'Passa / Concludi Fase'}
               </button>
             </div>
           </div>
+
+          <!-- Phase IV Production Breakdown Notification Banner -->
+          ${phaseId === 4 && pRep ? `
+            <div class="bg-purple-950/40 border border-purple-500/50 rounded-xl p-3 text-xs text-purple-200 flex items-center justify-between flex-wrap gap-2">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-base">🏭</span>
+                <span class="font-bold text-white uppercase font-orbitron text-[11px]">Risorse Accreditate Round ${this.engine.round}:</span>
+                <span class="bg-amber-950/70 border border-amber-600/60 text-amber-300 px-2 py-0.5 rounded font-mono font-bold">+${pRep.totalMC} MC</span>
+                <span class="bg-orange-950/70 border border-orange-600/60 text-orange-300 px-2 py-0.5 rounded font-mono font-bold">+${pRep.heat} Calore</span>
+                <span class="bg-emerald-950/70 border border-emerald-600/60 text-emerald-300 px-2 py-0.5 rounded font-mono font-bold">+${pRep.plants} Piante</span>
+                <span class="bg-pink-950/70 border border-pink-600/60 text-pink-300 px-2 py-0.5 rounded font-mono font-bold">+${pRep.cardsCount} Carte</span>
+              </div>
+              <button 
+                data-action="reopen_production_modal" 
+                class="text-[11px] text-purple-300 hover:text-white underline font-mono"
+              >
+                Dettaglio Completo ➔
+              </button>
+            </div>
+          ` : ''}
 
           <!-- Helper hint if waiting for next phase -->
           ${player.selectedPhase === 5 && phaseId < 5 ? `
@@ -812,6 +974,7 @@ class AresApp {
   renderCardsArea() {
     if (!this.cardsContainerEl) return;
     const player = this.engine.players[0];
+    const bot = this.engine.players[1];
     const phaseId = this.engine.phaseResolution?.phaseId;
     const researchOffer = this.engine.phaseResolution?.researchOffered?.['player'];
 
@@ -820,6 +983,63 @@ class AresApp {
     document.getElementById('tab-count-green').textContent = player.playedCards.filter(c => c.type === 'green').length;
     document.getElementById('tab-count-blue').textContent = player.playedCards.filter(c => c.type === 'blue').length;
     document.getElementById('tab-count-red').textContent = player.playedCards.filter(c => c.type === 'red').length;
+    const oppTabCount = document.getElementById('tab-count-opponent');
+    if (oppTabCount) oppTabCount.textContent = bot.playedCards.length;
+
+    // IF in opponent tab: show opponent's tableau & played cards!
+    if (this.currentTab === 'opponent') {
+      const botTags = this.engine.getPlayerTags(bot);
+      const activeTags = Object.values(TAGS).filter(t => (botTags[t.id] || 0) > 0);
+
+      const botHeaderHTML = `
+        <div class="col-span-full bg-red-950/30 border border-red-500/40 rounded-2xl p-3.5 mb-3">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-red-900/60 pb-2.5 mb-2.5">
+            <div class="flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-lg bg-red-600/30 border border-red-500/50 flex items-center justify-center text-lg">🤖</span>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="font-black text-sm text-white font-orbitron uppercase">${bot.name}</h4>
+                  <span class="bg-red-950 text-red-300 font-mono text-xs px-2 py-0.5 rounded border border-red-700">${bot.corporation.name}</span>
+                </div>
+                <p class="text-[11px] text-slate-300">${bot.corporation.description}</p>
+              </div>
+            </div>
+
+            <button 
+              data-action="inspect_bot"
+              class="px-3.5 py-1.5 rounded-xl bg-red-900/60 hover:bg-red-800 border border-red-500/50 text-red-200 hover:text-white font-bold text-xs uppercase font-orbitron transition flex items-center gap-1.5 shadow"
+            >
+              <span>👁️</span>
+              <span>Apri Plancia Completa</span>
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2 flex-wrap text-xs font-mono">
+            <span class="text-slate-400 font-bold uppercase text-[10px]">Tag Raccolti:</span>
+            ${activeTags.map(t => `
+              <span class="inline-flex items-center gap-1 bg-slate-900 border border-slate-700 px-2 py-0.5 rounded text-[10px] text-slate-200">
+                <span>${t.icon}</span> <strong>${botTags[t.id]}</strong>
+              </span>
+            `).join('')}
+            ${activeTags.length === 0 ? '<span class="text-slate-500 text-[10px]">Nessun tag ancora accumulato.</span>' : ''}
+          </div>
+        </div>
+      `;
+
+      let cardsListHTML = '';
+      if (bot.playedCards.length === 0) {
+        cardsListHTML = `
+          <div class="col-span-full py-12 text-center text-slate-500 text-sm border-2 border-dashed border-slate-800 rounded-2xl">
+            Ares Bot non ha ancora giocato nessuna carta.
+          </div>
+        `;
+      } else {
+        cardsListHTML = bot.playedCards.map(card => renderCard(card, bot, phaseId, null, 'opponent_played')).join('');
+      }
+
+      this.cardsContainerEl.innerHTML = botHeaderHTML + cardsListHTML;
+      return;
+    }
 
     // IF Phase 5 is active and player has cards to pick, show research draft banner directly!
     let researchDraftHTML = '';
@@ -938,18 +1158,32 @@ class AresApp {
 
     // 1. Planning Step Modal
     if (this.engine.step === 'planning') {
+      this.isInspectModalOpen = false;
       this.openPlanningModal();
       return;
     }
 
-    // 2. Research Phase Modal (Phase V)
+    // 2. Production Phase Modal (Phase IV)
+    if (this.engine.step === 'resolution' && this.engine.phaseResolution?.phaseId === 4 && !this.engine.phaseResolution?.playerDone) {
+      this.isInspectModalOpen = false;
+      this.openProductionModal();
+      return;
+    }
+
+    // 3. Research Phase Modal (Phase V)
     const researchOffer = this.engine.phaseResolution?.researchOffered?.['player'];
-    if (this.engine.step === 'resolution' && this.engine.phaseResolution.phaseId === 5 && researchOffer) {
+    if (this.engine.step === 'resolution' && this.engine.phaseResolution?.phaseId === 5 && researchOffer) {
+      this.isInspectModalOpen = false;
       this.openResearchModal();
       return;
     }
 
-    // 3. Game Over Modal
+    // 4. Opponent Inspection Modal (keep open if user has it opened)
+    if (this.isInspectModalOpen) {
+      return;
+    }
+
+    // 5. Game Over Modal
     if (this.engine.isGameOver && this.engine.finalScores) {
       sounds.victory();
       this.modalOverlayEl.innerHTML = renderGameOverModal(this.engine.finalScores);

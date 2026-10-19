@@ -57,6 +57,9 @@
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col font-sans selection:bg-amber-500 selection:text-slate-950">
 
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="fixed top-14 sm:top-16 right-3 sm:right-6 z-50 flex flex-col gap-2 pointer-events-none max-w-sm w-full"></div>
+
   <!-- TOP APP BAR -->
   <header class="bg-slate-950/90 border-b border-slate-800/80 backdrop-blur-md sticky top-0 z-40 px-3 sm:px-4 py-2 sm:py-2.5">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-3">
@@ -223,6 +226,14 @@
             >
               <span class="text-red-400">Rosse</span>
               <span id="tab-count-red" class="bg-red-950 text-red-300 font-mono text-[10px] px-2 py-0.5 rounded-full border border-red-700/60">0</span>
+            </button>
+
+            <button 
+              data-tab="opponent" 
+              class="tab-btn font-bold text-xs px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 bg-slate-950/60 transition flex items-center gap-1.5"
+            >
+              <span class="text-rose-400">🤖 Carte Bot</span>
+              <span id="tab-count-opponent" class="bg-rose-950 text-rose-300 font-mono text-[10px] px-2 py-0.5 rounded-full border border-rose-700/60">0</span>
             </button>
           </div>
 

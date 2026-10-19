@@ -75,6 +75,13 @@ class SoundManager {
     setTimeout(() => this.playTone(780, 'sine', 0.14, 0.07), 70);
   }
 
+  production() {
+    if (!this.enabled) return;
+    [330, 440, 550, 660, 880].forEach((freq, idx) => {
+      setTimeout(() => this.playTone(freq, 'triangle', 0.18, 0.08), idx * 70);
+    });
+  }
+
   victory() {
     if (!this.enabled) return;
     [440, 554, 659, 880].forEach((freq, idx) => {
