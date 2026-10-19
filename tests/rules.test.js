@@ -154,4 +154,52 @@ describe('Terraforming Mars: Ares Expedition Engine Tests', () => {
     assert.ok(engine.finalScores);
     assert.strictEqual(engine.finalScores.length, 2);
   });
+
+  test('Phase II Construction lead bonus allows drawing 1 card instead of playing 2nd card', () => {
+    const player = engine.players[0];
+    const bot = engine.players[1];
+
+    // Player chooses Phase II (Construction)
+    engine.setPhaseChoice(player.id, 2);
+    engine.setPhaseChoice(bot.id, 4);
+
+    engine.startResolution();
+    assert.strictEqual(engine.phaseResolution.phaseId, 2);
+    // Player is chooser: starts with 2 plays remaining and bonus unclaimed
+    assert.strictEqual(engine.phaseResolution.cardPlaysRemaining[player.id], 2);
+    assert.strictEqual(engine.phaseResolution.bonusClaimed[player.id], false);
+
+    const initialHandSize = player.hand.length;
+
+    // Player claims the draw bonus
+    const drawn = engine.claimConstructionDrawBonus(player);
+    assert.ok(drawn);
+    assert.strictEqual(player.hand.length, initialHandSize + 1);
+    assert.strictEqual(engine.phaseResolution.bonusClaimed[player.id], true);
+    // Card plays remaining drops from 2 to 1 (base play remains)
+    assert.strictEqual(engine.phaseResolution.cardPlaysRemaining[player.id], 1);
+  });
+
+  test('Ares Bot demonstrates diverse strategic phase selection based on board state', () => {
+    const bot = engine.players[1];
+    const botAgent = new AresBot(bot, engine);
+
+    // State A: Bot has abundant plants (>= 8) -> Action Phase (Phase 3) should be highly rated
+    bot.resources.plants = 10;
+    bot.resources.mc = 15;
+    const scorePhase3 = botAgent.evaluatePhase(3);
+    assert.ok(scorePhase3 > 30, 'Phase 3 should score high when plants are ready for forest conversion');
+
+    // State B: Bot has almost no MC (< 5) and cards in hand -> Production (Phase 4) should be highly rated
+    bot.resources.plants = 0;
+    bot.resources.mc = 2;
+    const scorePhase4 = botAgent.evaluatePhase(4);
+    assert.ok(scorePhase4 > 30, 'Phase 4 should score high when MC is critically low');
+
+    // State C: Bot has empty hand (<= 1 card) and abundant MC -> Research (Phase 5) should be highly rated
+    bot.resources.mc = 25;
+    bot.hand = [];
+    const scorePhase5 = botAgent.evaluatePhase(5);
+    assert.ok(scorePhase5 > 35, 'Phase 5 should score high when hand is depleted');
+  });
 });

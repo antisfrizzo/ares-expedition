@@ -169,10 +169,22 @@ class AresApp {
         this.modalOverlayEl.classList.add('hidden');
       } else if (action === 'open_research_modal') {
         this.openResearchModal();
+      } else if (action === 'claim_phase2_draw') {
+        this.onClaimPhase2Draw();
       } else if (action === 'pass_phase') {
         this.onPlayerPassPhase();
       }
     });
+  }
+
+  onClaimPhase2Draw() {
+    try {
+      this.engine.claimConstructionDrawBonus(this.engine.players[0]);
+      sounds.cardPlay();
+      this.render();
+    } catch (err) {
+      alert(err.message);
+    }
   }
 
   toggleSound() {
@@ -742,16 +754,28 @@ class AresApp {
                 </div>
                 <p class="text-xs text-slate-300 mt-0.5">
                   ${phaseConfig.description} ${isChooser ? `<span class="text-amber-300 font-semibold">• ${phaseConfig.bonusDescription}</span>` : ''}
+                  ${phaseId === 2 && isChooser && !this.engine.phaseResolution?.bonusClaimed?.[player.id] ? `<span class="block text-[11px] text-cyan-300 mt-1 font-mono font-medium">💡 Puoi giocare 1 carta blu/rossa e poi scegliere: giocare una 2ª carta OPPURE cliccare su <strong>"Pesca 1 Carta (Bonus)"</strong>.</span>` : ''}
                 </p>
               </div>
             </div>
 
             <!-- Contextual action buttons -->
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 flex-wrap">
               ${(phaseId === 1 || phaseId === 2) ? `
                 <span class="text-xs bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-slate-300 font-mono">
                   Giocate rimaste: <strong class="text-amber-400">${playsLeft}</strong>
                 </span>
+              ` : ''}
+
+              ${(phaseId === 2 && isChooser && !this.engine.phaseResolution?.bonusClaimed?.[player.id] && playsLeft > 0) ? `
+                <button 
+                  data-action="claim_phase2_draw"
+                  class="px-3.5 sm:px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-black text-xs uppercase font-orbitron tracking-wider transition shadow-lg shadow-blue-500/30 flex items-center gap-1.5 animate-pulse"
+                  title="Pesca 1 carta dal mazzo come Bonus di Guida invece di giocare la seconda carta"
+                >
+                  <span>📥</span>
+                  <span>Pesca 1 Carta (Bonus)</span>
+                </button>
               ` : ''}
 
               ${phaseId === 5 && researchOffer ? `

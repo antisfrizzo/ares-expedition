@@ -408,6 +408,13 @@ export class GameEngine {
     player.playedCards.push(card);
     this.phaseResolution.cardPlaysRemaining[player.id] -= 1;
 
+    // In Phase 2: If player is chooser and had 2 plays, playing their 2nd card consumes their lead bonus
+    if (this.phaseResolution.phaseId === 2 && player.selectedPhase === 2) {
+      if (this.phaseResolution.cardPlaysRemaining[player.id] === 0) {
+        this.phaseResolution.bonusClaimed[player.id] = true;
+      }
+    }
+
     this.log(`${player.name} gioca ${card.name} (Costo effettivo: ${remainingCost} MC, Acciaio: ${actualSteelUsed}, Titanio: ${actualTiUsed}).`);
 
     // Apply immediate effects
@@ -598,7 +605,8 @@ export class GameEngine {
       botDone: false,
       cardPlaysRemaining: {},
       actionsUsed: {},
-      researchOffered: {}
+      researchOffered: {},
+      bonusClaimed: {}
     };
 
     const phaseConfig = Object.values(PHASES).find(p => p.id === phaseId);
@@ -607,13 +615,13 @@ export class GameEngine {
     // Setup each player for this phase
     for (const p of this.players) {
       const isChooser = p.selectedPhase === phaseId;
+      this.phaseResolution.bonusClaimed[p.id] = !isChooser;
 
       if (phaseId === 1) { // Development
         this.phaseResolution.cardPlaysRemaining[p.id] = 1;
       } else if (phaseId === 2) { // Construction
         this.phaseResolution.cardPlaysRemaining[p.id] = isChooser ? 2 : 1;
         // In Ares Expedition, Construction bonus gives EITHER 1 extra play OR draw 1 card.
-        // We initialize with 2 plays if chooser, and allow drawing 1 card as an action option
       } else if (phaseId === 4) { // Production
         // Instant resolution of production
         this.resolveProduction(p, isChooser);
@@ -633,6 +641,32 @@ export class GameEngine {
       // Production resolves instantly for both
       this.nextPhase();
     }
+  }
+
+  claimConstructionDrawBonus(player) {
+    if (this.phaseResolution?.phaseId !== 2) {
+      throw new Error('Il bonus di pesca è utilizzabile solo durante la Fase II (Costruzione).');
+    }
+    if (player.selectedPhase !== 2) {
+      throw new Error('Solo chi ha scelto la Fase II ha diritto al Bonus di Guida.');
+    }
+    if (this.phaseResolution.bonusClaimed?.[player.id]) {
+      throw new Error('Hai già utilizzato il Bonus di Guida per questa fase.');
+    }
+    const playsLeft = this.phaseResolution.cardPlaysRemaining[player.id] || 0;
+    if (playsLeft <= 0) {
+      throw new Error('Nessuna azione bonus rimanente per pescare.');
+    }
+
+    const drawn = this.drawCard();
+    if (drawn) {
+      player.hand.push(drawn);
+    }
+    this.phaseResolution.bonusClaimed[player.id] = true;
+    this.phaseResolution.cardPlaysRemaining[player.id] = Math.max(0, playsLeft - 1);
+
+    this.log(`${player.name} attiva il Bonus Guida Fase II: Pesca 1 carta dal mazzo.`);
+    return drawn;
   }
 
   resolveProduction(player, isChooser) {
@@ -677,11 +711,29 @@ export class GameEngine {
   }
 
   playerPassPhase() {
+    const player = this.players[0];
+    // If in Phase 2 as chooser with unused bonus play, claim the draw bonus automatically on pass!
+    if (this.phaseResolution.phaseId === 2 && player.selectedPhase === 2 && !this.phaseResolution.bonusClaimed?.[player.id] && (this.phaseResolution.cardPlaysRemaining[player.id] || 0) > 0) {
+      try {
+        this.claimConstructionDrawBonus(player);
+      } catch (e) {
+        // Ignore if deck empty or already claimed
+      }
+    }
     this.phaseResolution.playerDone = true;
     this.checkPhaseCompletion();
   }
 
   botPassPhase() {
+    const bot = this.players[1];
+    // If bot in Phase 2 as chooser with unused bonus play, claim the draw bonus automatically!
+    if (this.phaseResolution.phaseId === 2 && bot.selectedPhase === 2 && !this.phaseResolution.bonusClaimed?.[bot.id] && (this.phaseResolution.cardPlaysRemaining[bot.id] || 0) > 0) {
+      try {
+        this.claimConstructionDrawBonus(bot);
+      } catch (e) {
+        // Ignore
+      }
+    }
     this.phaseResolution.botDone = true;
     this.checkPhaseCompletion();
   }
